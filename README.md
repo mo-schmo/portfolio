@@ -1,6 +1,11 @@
-# create-svelte
+# Portfolio
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A personal portfolio application.
+
+# Tasks
+
+- [ ] Finish Header
+- [ ] Start Home Page
 
 ## Creating a project
 
