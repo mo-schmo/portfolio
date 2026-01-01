@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply bg-cyber-darker text-cyber-cyan font-cyber;
+		position: relative;
+		overflow-x: hidden;
+	}
+
+	body::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: 
+			linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%),
+			radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+		background-size: 100% 4px, 100% 100%;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	body::after {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			rgba(0, 255, 255, 0.02) 50%,
+			transparent 100%
+		);
+		animation: scanline 8s linear infinite;
+		pointer-events: none;
+		z-index: 2;
+	}
+}
+
+@layer components {
+	.neon-border {
+		@apply border-2 border-cyber-cyan;
+		box-shadow: 
+			0 0 5px #00FFFF,
+			inset 0 0 5px #00FFFF,
+			0 0 10px #00FFFF,
+			0 0 20px #00FFFF;
+	}
+
+	.neon-text {
+		text-shadow: 
+			0 0 5px currentColor,
+			0 0 10px currentColor,
+			0 0 15px currentColor,
+			0 0 20px currentColor;
+	}
+
+	.glass-card {
+		@apply bg-black/20 backdrop-blur-sm border border-cyber-cyan/30;
+		box-shadow: 
+			0 8px 32px 0 rgba(0, 255, 255, 0.1),
+			inset 0 0 20px rgba(0, 255, 255, 0.05);
+	}
+
+	.glow-on-hover {
+		transition: all 0.3s ease;
+	}
+
+	.glow-on-hover:hover {
+		@apply text-cyber-cyan;
+		text-shadow: 
+			0 0 10px currentColor,
+			0 0 20px currentColor,
+			0 0 30px currentColor;
+	}
+}
