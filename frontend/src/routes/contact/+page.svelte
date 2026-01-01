@@ -30,7 +30,7 @@
 			<div class="text-center">
 				<div class="text-4xl mb-4">✓</div>
 				<h2 class="text-2xl font-bold text-cyber-pink mb-4">Message Sent!</h2>
-				<p class="text-cyber-cyan/80 mb-6">Thank you for reaching out. I'll get back to you soon.</p>
+				<p class="mb-6">Thank you for reaching out. I'll get back to you soon.</p>
 				<button
 					on:click={() => submitted = false}
 					class="px-6 py-2 neon-border glow-on-hover"
@@ -49,7 +49,7 @@
 						type="text"
 						bind:value={formData.name}
 						required
-						class="w-full px-4 py-3 bg-black/30 border border-cyber-cyan/50 focus:border-cyber-cyan focus:outline-none text-cyber-cyan rounded-lg"
+						class="w-full px-4 py-3 bg-black/30 border border-cyber-cyan/50 focus:border-cyber-cyan focus:outline-none rounded-lg"
 						placeholder="Your Name"
 					/>
 				</div>
@@ -63,7 +63,7 @@
 						type="email"
 						bind:value={formData.email}
 						required
-						class="w-full px-4 py-3 bg-black/30 border border-cyber-cyan/50 focus:border-cyber-cyan focus:outline-none text-cyber-cyan rounded-lg"
+						class="w-full px-4 py-3 bg-black/30 border border-cyber-cyan/50 focus:border-cyber-cyan focus:outline-none rounded-lg"
 						placeholder="your.email@example.com"
 					/>
 				</div>
@@ -77,7 +77,7 @@
 						bind:value={formData.message}
 						required
 						rows="6"
-						class="w-full px-4 py-3 bg-black/30 border border-cyber-cyan/50 focus:border-cyber-cyan focus:outline-none text-cyber-cyan rounded-lg resize-none"
+						class="w-full px-4 py-3 bg-black/30 border border-cyber-cyan/50 focus:border-cyber-cyan focus:outline-none rounded-lg resize-none"
 						placeholder="Your message..."
 					></textarea>
 				</div>
@@ -101,6 +101,5 @@
 		>
 			HAMZA.ABJOL.MOHAMMED@GMAIL.COM
 		</a>
-		<p class="text-cyber-cyan/70 mt-4">(586) 344 - 7906</p>
 	</div>
 </div>

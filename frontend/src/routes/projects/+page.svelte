@@ -48,7 +48,7 @@
 					{project.title}
 				</h2>
 				
-				<p class="text-cyber-cyan/80 mb-4 flex-grow">
+				<p class="mb-4 flex-grow">
 					{project.description}
 				</p>
 				

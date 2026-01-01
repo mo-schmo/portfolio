@@ -66,10 +66,10 @@
 			<h1 class="text-4xl md:text-5xl font-bold mb-4 neon-text text-cyber-pink">
 				{post.title}
 			</h1>
-			<div class="text-cyber-cyan/60 mb-8">
+			<div class="text-cyber-cyan/70 mb-8">
 				{formatDate(post.publishedAt)}
 			</div>
-			<div class="text-lg text-cyber-cyan/90 leading-relaxed">
+			<div class="text-lg leading-relaxed">
 				{@html renderMarkdown(post.content)}
 			</div>
 		</article>

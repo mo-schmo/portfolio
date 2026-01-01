@@ -1,7 +1,7 @@
 <script lang="ts">
 	const socialLinks = [
-		{ name: 'GitHub', url: 'https://github.com' },
-		{ name: 'LinkedIn', url: 'https://linkedin.com' },
+		{ name: 'GitHub', url: 'https://github.com/mo-schmo' },
+		{ name: 'LinkedIn', url: 'https://www.linkedin.com/in/mohammed-h-a7a275118/' },
 		{ name: 'Email', url: 'mailto:HAMZA.ABJOL.MOHAMMED@GMAIL.COM' }
 	];
 </script>

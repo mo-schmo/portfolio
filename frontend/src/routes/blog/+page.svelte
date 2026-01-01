@@ -23,10 +23,10 @@
 				<h2 class="text-2xl font-bold text-cyber-pink mb-4 neon-text">
 					{post.title}
 				</h2>
-				<p class="text-cyber-cyan/80 mb-4 flex-grow">
+				<p class="mb-4 flex-grow">
 					{post.excerpt}
 				</p>
-				<div class="text-cyber-cyan/60 text-sm">
+				<div class="text-cyber-cyan/70 text-sm">
 					{formatDate(post.publishedAt)}
 				</div>
 			</a>

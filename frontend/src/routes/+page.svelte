@@ -54,13 +54,13 @@
 				MOHAMMED HAMZA
 			</h1>
 			<div class="text-2xl md:text-3xl text-cyber-pink mb-4 neon-text">
-				Software Engineer & Tech Lead
+				Software Engineer
 			</div>
-			<div class="text-xl text-cyber-cyan/80 mb-6">
-				Detroit, MI • (586) 344 - 7906
+			<div class="text-xl text-cyber-brown/90 mb-6">
+				Detroit, MI
 			</div>
 			<a
-				href="mailto:HAMZA.ABJOL.MOHAMMED@GMAIL.COM"
+				href="/contact"
 				class="inline-block px-8 py-3 neon-border glow-on-hover bg-black/20"
 			>
 				Contact Me
@@ -72,12 +72,12 @@
 	<section class="mb-20">
 		<h2 class="text-4xl font-bold mb-8 neon-text">About</h2>
 		<div class="glass-card p-8 rounded-lg">
-			<p class="text-lg text-cyber-cyan/90 leading-relaxed mb-4">
+			<p class="text-lg leading-relaxed mb-4">
 				Experienced Software Engineer and Tech Lead with a passion for building scalable applications and leading technical initiatives. 
 				Specialized in modern web technologies, cloud architecture, and full-stack development.
 			</p>
-			<p class="text-lg text-cyber-cyan/90 leading-relaxed">
-				Currently leading cloud migration initiatives and building robust CI/CD pipelines at Ford Motor Company Credit, 
+			<p class="text-lg leading-relaxed">
+				Currently working on breaking into the legal field and getting into law school, 
 				while continuously exploring new technologies and best practices.
 			</p>
 		</div>
@@ -96,7 +96,7 @@
 					</div>
 					<ul class="space-y-2">
 						{#each exp.achievements as achievement}
-							<li class="text-cyber-cyan/90 flex items-start">
+							<li class="flex items-start">
 								<span class="text-cyber-cyan mr-2">▸</span>
 								<span>{achievement}</span>
 							</li>
@@ -127,7 +127,7 @@
 					<h3 class="text-xl font-bold text-cyber-pink mb-4">{category}</h3>
 					<ul class="space-y-2">
 						{#each items as item}
-							<li class="text-cyber-cyan/90">{item}</li>
+							<li>{item}</li>
 						{/each}
 					</ul>
 				</div>
