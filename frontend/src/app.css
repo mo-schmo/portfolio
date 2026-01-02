@@ -3,10 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+	:root {
+		--cyber-cyan: #00d9ff;
+		--cyber-accent: #58a6ff;
+		--cyber-text: #e6edf3;
+		--cyber-text-muted: #8b949e;
+		--cyber-border: #30363d;
+		--cyber-dark: #0d1117;
+		--cyber-darker: #0a0e1a;
+		--cyber-card: #161b22;
+		--gradient-cyan: rgba(0, 217, 255, 0.03);
+		--gradient-accent: rgba(88, 166, 255, 0.02);
+	}
+
 	body {
-		@apply bg-cyber-darker text-cyber-cyan font-cyber;
+		@apply bg-cyber-darker text-cyber-text font-cyber;
 		position: relative;
 		overflow-x: hidden;
+		transition: background-color 0.3s ease, color 0.3s ease;
 	}
 
 	body::before {
@@ -17,55 +31,51 @@
 		width: 100%;
 		height: 100%;
 		background: 
-			linear-gradient(transparent 50%, rgba(248, 135, 255, 0.03) 50%),
-			radial-gradient(circle at 50% 50%, rgba(248, 135, 255, 0.05) 0%, transparent 70%);
-		background-size: 100% 4px, 100% 100%;
+			radial-gradient(ellipse at top, var(--gradient-cyan, rgba(0, 217, 255, 0.03)) 0%, transparent 50%),
+			radial-gradient(ellipse at bottom, var(--gradient-accent, rgba(88, 166, 255, 0.02)) 0%, transparent 50%);
 		pointer-events: none;
 		z-index: 1;
-	}
-
-	body::after {
-		content: '';
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(
-			180deg,
-			transparent 0%,
-			rgba(248, 135, 255, 0.02) 50%,
-			transparent 100%
-		);
-		animation: scanline 8s linear infinite;
-		pointer-events: none;
-		z-index: 2;
+		transition: background 0.3s ease;
 	}
 }
 
 @layer components {
 	.neon-border {
-		@apply border-2 border-cyber-cyan;
+		border: 1px solid color-mix(in srgb, var(--cyber-cyan) 50%, transparent);
 		box-shadow: 
-			0 0 5px #f887ff,
-			inset 0 0 5px #f887ff,
-			0 0 10px #f887ff,
-			0 0 20px #f887ff;
+			0 0 2px color-mix(in srgb, var(--cyber-cyan) 30%, transparent),
+			inset 0 0 2px color-mix(in srgb, var(--cyber-cyan) 10%, transparent);
+		transition: all 0.3s ease;
+	}
+
+	.neon-border:hover {
+		border-color: var(--cyber-cyan);
+		box-shadow: 
+			0 0 4px color-mix(in srgb, var(--cyber-cyan) 50%, transparent),
+			inset 0 0 4px color-mix(in srgb, var(--cyber-cyan) 20%, transparent);
 	}
 
 	.neon-text {
-		text-shadow: 
-			0 0 5px currentColor,
-			0 0 10px currentColor,
-			0 0 15px currentColor,
-			0 0 20px currentColor;
+		text-shadow: 0 0 8px color-mix(in srgb, var(--cyber-cyan) 30%, transparent);
 	}
 
 	.glass-card {
-		@apply bg-black/20 backdrop-blur-sm border border-cyber-cyan/30;
+		background-color: color-mix(in srgb, var(--cyber-card) 80%, transparent);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		border: 1px solid var(--cyber-border);
 		box-shadow: 
-			0 8px 32px 0 rgba(248, 135, 255, 0.1),
-			inset 0 0 20px rgba(248, 135, 255, 0.05);
+			0 4px 16px 0 rgba(0, 0, 0, 0.3),
+			inset 0 1px 0 rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+	}
+
+	.glass-card:hover {
+		border-color: color-mix(in srgb, var(--cyber-cyan) 30%, transparent);
+		box-shadow: 
+			0 8px 24px 0 rgba(0, 0, 0, 0.4),
+			0 0 8px color-mix(in srgb, var(--cyber-cyan) 10%, transparent),
+			inset 0 1px 0 rgba(255, 255, 255, 0.05);
 	}
 
 	.glow-on-hover {
@@ -73,10 +83,40 @@
 	}
 
 	.glow-on-hover:hover {
-		@apply text-cyber-pink;
-		text-shadow: 
-			0 0 10px currentColor,
-			0 0 20px currentColor,
-			0 0 30px currentColor;
+		@apply text-cyber-cyan;
+	}
+}
+
+@layer utilities {
+	.bg-cyber-card-95 {
+		background-color: color-mix(in srgb, var(--cyber-card) 95%, transparent);
+	}
+	
+	.bg-cyber-cyan-10 {
+		background-color: color-mix(in srgb, var(--cyber-cyan) 10%, transparent);
+	}
+	
+	.bg-cyber-cyan-20 {
+		background-color: color-mix(in srgb, var(--cyber-cyan) 20%, transparent);
+	}
+	
+	.border-cyber-cyan-30 {
+		border-color: color-mix(in srgb, var(--cyber-cyan) 30%, transparent);
+	}
+	
+	.border-cyber-cyan-50 {
+		border-color: color-mix(in srgb, var(--cyber-cyan) 50%, transparent);
+	}
+	
+	.text-cyber-cyan-50 {
+		color: color-mix(in srgb, var(--cyber-cyan) 50%, transparent);
+	}
+	
+	.text-cyber-cyan-70 {
+		color: color-mix(in srgb, var(--cyber-cyan) 70%, transparent);
+	}
+	
+	.border-t-cyber-cyan-30 {
+		border-top-color: color-mix(in srgb, var(--cyber-cyan) 30%, transparent);
 	}
 }

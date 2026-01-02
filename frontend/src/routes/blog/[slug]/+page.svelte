@@ -17,9 +17,9 @@
 		let html = text;
 		
 		// Headers (must be processed first, before paragraphs)
-		html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold text-cyber-pink mb-2 mt-6">$1</h3>');
-		html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold text-cyber-pink mb-3 mt-6">$1</h2>');
-		html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold text-cyber-pink mb-4 mt-8 neon-text">$1</h1>');
+		html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold text-cyber-accent mb-2 mt-6">$1</h3>');
+		html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold text-cyber-accent mb-3 mt-6">$1</h2>');
+		html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold text-cyber-accent mb-4 mt-8">$1</h1>');
 		
 		// Bold and italic
 		html = html.replace(/\*\*(.*?)\*\*/gim, '<strong class="text-cyber-cyan">$1</strong>');
@@ -57,16 +57,16 @@
 	<div class="container mx-auto px-4 py-12 max-w-4xl">
 		<button
 			on:click={() => goto('/blog')}
-			class="mb-8 text-cyber-cyan/70 hover:text-cyber-cyan glow-on-hover transition-colors"
+			class="mb-8 text-cyber-text-muted hover:text-cyber-cyan transition-colors"
 		>
 			← Back to Blog
 		</button>
 		
 		<article class="glass-card p-8 md:p-12 rounded-lg">
-			<h1 class="text-4xl md:text-5xl font-bold mb-4 neon-text text-cyber-pink">
+			<h1 class="text-4xl md:text-5xl font-bold mb-4 text-cyber-accent">
 				{post.title}
 			</h1>
-			<div class="text-cyber-cyan/70 mb-8">
+			<div class="text-cyber-text-muted mb-8">
 				{formatDate(post.publishedAt)}
 			</div>
 			<div class="text-lg leading-relaxed">
@@ -76,6 +76,6 @@
 	</div>
 {:else}
 	<div class="container mx-auto px-4 py-12">
-		<p class="text-cyber-cyan/70">Loading...</p>
+		<p class="text-cyber-text-muted">Loading...</p>
 	</div>
 {/if}

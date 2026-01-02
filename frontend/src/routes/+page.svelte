@@ -50,18 +50,18 @@
 	<!-- Hero Section -->
 	<section class="text-center mb-20">
 		<div class="mb-8">
-			<h1 class="text-6xl md:text-8xl font-bold mb-4 neon-text animate-glow">
+			<h1 class="text-6xl md:text-8xl font-bold mb-4 text-cyber-text">
 				MOHAMMED HAMZA
 			</h1>
-			<div class="text-2xl md:text-3xl text-cyber-pink mb-4 neon-text">
+			<div class="text-2xl md:text-3xl text-cyber-accent mb-4">
 				Software Engineer
 			</div>
-			<div class="text-xl text-cyber-brown/90 mb-6">
+			<div class="text-xl text-cyber-text-muted mb-6">
 				Detroit, MI
 			</div>
 			<a
 				href="/contact"
-				class="inline-block px-8 py-3 neon-border glow-on-hover bg-black/20"
+				class="inline-block px-8 py-3 neon-border text-cyber-text hover:text-cyber-cyan transition-colors"
 			>
 				Contact Me
 			</a>
@@ -70,7 +70,7 @@
 
 	<!-- About Section -->
 	<section class="mb-20">
-		<h2 class="text-4xl font-bold mb-8 neon-text">About</h2>
+		<h2 class="text-4xl font-bold mb-8 text-cyber-text">About</h2>
 		<div class="glass-card p-8 rounded-lg">
 			<p class="text-lg leading-relaxed mb-4">
 				Experienced Software Engineer and Tech Lead with a passion for building scalable applications and leading technical initiatives. 
@@ -85,14 +85,14 @@
 
 	<!-- Experience Section -->
 	<section class="mb-20">
-		<h2 class="text-4xl font-bold mb-8 neon-text">Experience</h2>
+		<h2 class="text-4xl font-bold mb-8 text-cyber-text">Experience</h2>
 		<div class="space-y-8">
 			{#each experience as exp}
 				<div class="glass-card p-6 rounded-lg border-l-4 border-cyber-cyan">
 					<div class="mb-4">
-						<h3 class="text-2xl font-bold text-cyber-pink mb-2">{exp.title}</h3>
-						<div class="text-xl text-cyber-cyan mb-2">{exp.company}</div>
-						<div class="text-cyber-cyan/70">{exp.period}</div>
+						<h3 class="text-2xl font-bold text-cyber-accent mb-2">{exp.title}</h3>
+						<div class="text-xl text-cyber-text mb-2">{exp.company}</div>
+						<div class="text-cyber-text-muted">{exp.period}</div>
 					</div>
 					<ul class="space-y-2">
 						{#each exp.achievements as achievement}
@@ -109,22 +109,22 @@
 
 	<!-- Education Section -->
 	<section class="mb-20">
-		<h2 class="text-4xl font-bold mb-8 neon-text">Education</h2>
+		<h2 class="text-4xl font-bold mb-8 text-cyber-text">Education</h2>
 		<div class="glass-card p-6 rounded-lg">
-			<h3 class="text-2xl font-bold text-cyber-pink mb-2">Wayne State University</h3>
-			<div class="text-xl text-cyber-cyan mb-2">Bachelor of Science in Computer Science</div>
-			<div class="text-cyber-cyan/70 mb-2">Minor in Mathematics w/ Concentration in Data Science</div>
-			<div class="text-cyber-cyan/70">Fall 2017 – Winter 2020 • Detroit, MI</div>
+			<h3 class="text-2xl font-bold text-cyber-accent mb-2">Wayne State University</h3>
+			<div class="text-xl text-cyber-text mb-2">Bachelor of Science in Computer Science</div>
+			<div class="text-cyber-text-muted mb-2">Minor in Mathematics w/ Concentration in Data Science</div>
+			<div class="text-cyber-text-muted">Fall 2017 – Winter 2020 • Detroit, MI</div>
 		</div>
 	</section>
 
 	<!-- Skills Section -->
 	<section class="mb-20">
-		<h2 class="text-4xl font-bold mb-8 neon-text">Skills & Technologies</h2>
+		<h2 class="text-4xl font-bold mb-8 text-cyber-text">Skills & Technologies</h2>
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 			{#each Object.entries(skills) as [category, items]}
 				<div class="glass-card p-6 rounded-lg">
-					<h3 class="text-xl font-bold text-cyber-pink mb-4">{category}</h3>
+					<h3 class="text-xl font-bold text-cyber-accent mb-4">{category}</h3>
 					<ul class="space-y-2">
 						{#each items as item}
 							<li>{item}</li>
