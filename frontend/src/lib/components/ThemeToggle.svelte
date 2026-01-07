@@ -15,7 +15,7 @@
 
 <button
 	on:click={cycleTheme}
-	class="p-2 border border-cyber-border hover:border-cyber-cyan transition-all rounded-lg text-cyber-text-muted hover:text-cyber-cyan hover:bg-cyber-cyan-10"
+	class="p-2 hover:border-cyber-cyan transition-all rounded-lg text-cyber-text-muted hover:text-cyber-cyan hover:bg-cyber-cyan-10"
 	aria-label="Cycle theme (Current: {currentThemeData.label})"
 	title="Cycle theme: {currentThemeData.label}"
 >
