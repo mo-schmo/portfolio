@@ -1,9 +1,16 @@
 <script lang="ts">
-	import { mockBlogPosts } from '$lib/stores/mockData';
-	
+	import { onMount } from "svelte";
+
+	export let data;
+	$: posts = data.posts || [];
+
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
-		return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+		return date.toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+		});
 	}
 </script>
 
@@ -13,9 +20,9 @@
 
 <div class="container mx-auto px-4 py-12">
 	<h1 class="text-5xl font-bold mb-12 text-cyber-text text-center">Blog</h1>
-	
+
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-		{#each mockBlogPosts as post}
+		{#each posts as post}
 			<a
 				href="/blog/{post.slug}"
 				class="glass-card p-6 rounded-lg cursor-pointer glow-on-hover h-full flex flex-col block"
