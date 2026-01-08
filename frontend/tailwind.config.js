@@ -4,33 +4,28 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				cyber: {
-					cyan: 'var(--cyber-cyan)',
-					accent: 'var(--cyber-accent)',
-					text: 'var(--cyber-text)',
-					'text-muted': 'var(--cyber-text-muted)',
-					border: 'var(--cyber-border)',
-					dark: 'var(--cyber-dark)',
-					darker: 'var(--cyber-darker)',
-					card: 'var(--cyber-card)'
-				}
+				mahogany: {
+					DEFAULT: '#2d1b1b',
+					light: '#4a2c2c',
+					dark: '#1a1010'
+				},
+				parchment: {
+					DEFAULT: '#fbf9f1',
+					dark: '#f0ede0',
+					aged: '#e8e2c8'
+				},
+				brass: {
+					DEFAULT: '#947a46',
+					light: '#b59e6d',
+					dark: '#735f37'
+				},
+				ink: '#1a1a1a',
+				'paper-line': '#d1c7b1'
 			},
 			fontFamily: {
-				cyber: ['Inter', 'system-ui', 'sans-serif'],
+				display: ['Playfair Display', 'serif'],
+				serif: ['PT Serif', 'serif'],
 				mono: ['JetBrains Mono', 'monospace']
-			},
-			animation: {
-				'glow': 'glow 2s ease-in-out infinite alternate'
-			},
-			keyframes: {
-				glow: {
-					'0%': { opacity: 0.8 },
-					'100%': { opacity: 1 }
-				},
-				scanline: {
-					'0%': { transform: 'translateY(-100%)' },
-					'100%': { transform: 'translateY(100vh)' }
-				}
 			}
 		}
 	},
