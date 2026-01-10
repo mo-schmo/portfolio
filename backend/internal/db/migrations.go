@@ -25,7 +25,9 @@ func Migrate(db *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS projects (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
+		slug TEXT NOT NULL UNIQUE,
 		description TEXT NOT NULL,
+		content TEXT NOT NULL,
 		image_url TEXT,
 		github_url TEXT,
 		live_url TEXT,
@@ -45,6 +47,13 @@ func Migrate(db *sql.DB) error {
 		log.Printf("Error creating projects table: %v", err)
 		return err
 	}
+
+	// Ensure slug and content columns exist for existing tables
+	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN slug TEXT NOT NULL DEFAULT ''")
+	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN content TEXT NOT NULL DEFAULT ''")
+
+	// Populate empty slugs for existing projects
+	_, _ = db.Exec("UPDATE projects SET slug = lower(replace(title, ' ', '-')) WHERE slug = '' OR slug IS NULL")
 
 	log.Println("Database migrations completed successfully")
 	return nil

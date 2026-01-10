@@ -1,13 +1,24 @@
 <script lang="ts">
-	import { mockProjects } from "$lib/stores/mockData";
+	export let data;
+	$: projects = data.projects || [];
 
 	let filter = "all";
 	const filters = ["all", "featured"];
 
+	function parseTechnologies(techStr: string): string[] {
+		try {
+			const parsed = JSON.parse(techStr);
+			if (typeof parsed === "string") {
+				return JSON.parse(parsed);
+			}
+			return parsed;
+		} catch (e) {
+			return [];
+		}
+	}
+
 	$: filteredProjects =
-		filter === "featured"
-			? mockProjects.filter((p) => p.featured)
-			: mockProjects;
+		filter === "featured" ? projects.filter((p) => p.featured) : projects;
 </script>
 
 <svelte:head>
@@ -46,8 +57,9 @@
 	<!-- Projects Grid -->
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
 		{#each filteredProjects as project}
-			<div
-				class="legal-folio flex flex-col group overflow-hidden bg-white/50"
+			<a
+				href="/projects/{project.slug}"
+				class="legal-folio flex flex-col group overflow-hidden bg-white/50 cursor-pointer"
 			>
 				<div
 					class="relative overflow-hidden aspect-video border-b border-paper-line/50"
@@ -82,7 +94,7 @@
 
 					<div class="mb-10">
 						<div class="flex flex-wrap gap-2">
-							{#each project.technologies as tech}
+							{#each parseTechnologies(project.technologies) as tech}
 								<span
 									class="px-3 py-1 bg-mahogany/5 border border-mahogany/10 rounded-sm text-[10px] font-display font-bold uppercase tracking-widest text-mahogany/70"
 								>
@@ -93,29 +105,14 @@
 					</div>
 
 					<div class="flex gap-4">
-						{#if project.githubUrl}
-							<a
-								href={project.githubUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="flex-1 text-center py-3 font-display font-bold uppercase tracking-widest text-xs border border-mahogany text-mahogany hover:bg-mahogany hover:text-parchment transition-all"
-							>
-								Repository
-							</a>
-						{/if}
-						{#if project.liveUrl}
-							<a
-								href={project.liveUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="flex-1 text-center py-3 font-display font-bold uppercase tracking-widest text-xs bg-mahogany text-parchment border border-mahogany hover:bg-mahogany-light transition-all shadow-[2px_2px_0px_rgba(0,0,0,0.1)]"
-							>
-								Live Exhibit
-							</a>
-						{/if}
+						<div
+							class="flex-1 text-center py-3 font-display font-bold uppercase tracking-widest text-xs bg-mahogany text-parchment border border-mahogany group-hover:bg-mahogany-light transition-all shadow-[2px_2px_0px_rgba(0,0,0,0.1)]"
+						>
+							Examine Record
+						</div>
 					</div>
 				</div>
-			</div>
+			</a>
 		{/each}
 	</div>
 </div>

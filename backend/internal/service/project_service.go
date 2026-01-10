@@ -22,6 +22,10 @@ func (s *ProjectService) GetByID(id int) (*domain.Project, error) {
 	return s.repo.GetByID(id)
 }
 
+func (s *ProjectService) GetBySlug(slug string) (*domain.Project, error) {
+	return s.repo.GetBySlug(slug)
+}
+
 func (s *ProjectService) Create(req domain.CreateProjectRequest) (*domain.Project, error) {
 	technologiesJSON, err := json.Marshal(req.Technologies)
 	if err != nil {
@@ -30,7 +34,9 @@ func (s *ProjectService) Create(req domain.CreateProjectRequest) (*domain.Projec
 
 	project := &domain.Project{
 		Title:        req.Title,
+		Slug:         req.Slug,
 		Description:  req.Description,
+		Content:      req.Content,
 		ImageURL:     req.ImageURL,
 		GithubURL:    req.GithubURL,
 		LiveURL:      req.LiveURL,
@@ -61,7 +67,9 @@ func (s *ProjectService) Update(id int, req domain.UpdateProjectRequest) (*domai
 	}
 
 	project.Title = req.Title
+	project.Slug = req.Slug
 	project.Description = req.Description
+	project.Content = req.Content
 	project.ImageURL = req.ImageURL
 	project.GithubURL = req.GithubURL
 	project.LiveURL = req.LiveURL

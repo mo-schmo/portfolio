@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"encoding/json"
 	"portfolio-backend/internal/domain"
 	"time"
 )
@@ -17,7 +16,7 @@ func NewProjectRepository(db *sql.DB) *ProjectRepository {
 
 func (r *ProjectRepository) GetAll() ([]domain.Project, error) {
 	rows, err := r.db.Query(`
-		SELECT id, title, description, image_url, github_url, live_url, technologies, featured, created_at, updated_at
+		SELECT id, title, slug, description, content, image_url, github_url, live_url, technologies, featured, created_at, updated_at
 		FROM projects
 		ORDER BY created_at DESC
 	`)
@@ -31,7 +30,7 @@ func (r *ProjectRepository) GetAll() ([]domain.Project, error) {
 		var project domain.Project
 		var technologiesStr string
 		err := rows.Scan(
-			&project.ID, &project.Title, &project.Description,
+			&project.ID, &project.Title, &project.Slug, &project.Description, &project.Content,
 			&project.ImageURL, &project.GithubURL, &project.LiveURL,
 			&technologiesStr, &project.Featured, &project.CreatedAt, &project.UpdatedAt,
 		)
@@ -49,11 +48,33 @@ func (r *ProjectRepository) GetByID(id int) (*domain.Project, error) {
 	var project domain.Project
 	var technologiesStr string
 	err := r.db.QueryRow(`
-		SELECT id, title, description, image_url, github_url, live_url, technologies, featured, created_at, updated_at
+		SELECT id, title, slug, description, content, image_url, github_url, live_url, technologies, featured, created_at, updated_at
 		FROM projects
 		WHERE id = ?
 	`, id).Scan(
-		&project.ID, &project.Title, &project.Description,
+		&project.ID, &project.Title, &project.Slug, &project.Description, &project.Content,
+		&project.ImageURL, &project.GithubURL, &project.LiveURL,
+		&technologiesStr, &project.Featured, &project.CreatedAt, &project.UpdatedAt,
+	)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	project.Technologies = technologiesStr
+	return &project, nil
+}
+
+func (r *ProjectRepository) GetBySlug(slug string) (*domain.Project, error) {
+	var project domain.Project
+	var technologiesStr string
+	err := r.db.QueryRow(`
+		SELECT id, title, slug, description, content, image_url, github_url, live_url, technologies, featured, created_at, updated_at
+		FROM projects
+		WHERE slug = ?
+	`, slug).Scan(
+		&project.ID, &project.Title, &project.Slug, &project.Description, &project.Content,
 		&project.ImageURL, &project.GithubURL, &project.LiveURL,
 		&technologiesStr, &project.Featured, &project.CreatedAt, &project.UpdatedAt,
 	)
@@ -72,16 +93,11 @@ func (r *ProjectRepository) Create(project *domain.Project) error {
 	project.CreatedAt = now
 	project.UpdatedAt = now
 
-	technologiesJSON, err := json.Marshal(project.Technologies)
-	if err != nil {
-		return err
-	}
-
 	result, err := r.db.Exec(`
-		INSERT INTO projects (title, description, image_url, github_url, live_url, technologies, featured, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-	`, project.Title, project.Description, project.ImageURL, project.GithubURL,
-		project.LiveURL, string(technologiesJSON), project.Featured, project.CreatedAt, project.UpdatedAt)
+		INSERT INTO projects (title, slug, description, content, image_url, github_url, live_url, technologies, featured, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`, project.Title, project.Slug, project.Description, project.Content, project.ImageURL, project.GithubURL,
+		project.LiveURL, project.Technologies, project.Featured, project.CreatedAt, project.UpdatedAt)
 	if err != nil {
 		return err
 	}
@@ -97,17 +113,12 @@ func (r *ProjectRepository) Create(project *domain.Project) error {
 func (r *ProjectRepository) Update(project *domain.Project) error {
 	project.UpdatedAt = time.Now()
 
-	technologiesJSON, err := json.Marshal(project.Technologies)
-	if err != nil {
-		return err
-	}
-
-	_, err = r.db.Exec(`
+	_, err := r.db.Exec(`
 		UPDATE projects
-		SET title = ?, description = ?, image_url = ?, github_url = ?, live_url = ?, technologies = ?, featured = ?, updated_at = ?
+		SET title = ?, slug = ?, description = ?, content = ?, image_url = ?, github_url = ?, live_url = ?, technologies = ?, featured = ?, updated_at = ?
 		WHERE id = ?
-	`, project.Title, project.Description, project.ImageURL, project.GithubURL,
-		project.LiveURL, string(technologiesJSON), project.Featured, project.UpdatedAt, project.ID)
+	`, project.Title, project.Slug, project.Description, project.Content, project.ImageURL, project.GithubURL,
+		project.LiveURL, project.Technologies, project.Featured, project.UpdatedAt, project.ID)
 	return err
 }
 

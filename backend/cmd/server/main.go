@@ -70,6 +70,7 @@ func main() {
 	// Project routes
 	apiRouter.HandleFunc("/projects", projectHandler.GetAll).Methods("GET")
 	apiRouter.HandleFunc("/projects/{id:[0-9]+}", projectHandler.GetByID).Methods("GET")
+	apiRouter.HandleFunc("/projects/slug/{slug}", projectHandler.GetBySlug).Methods("GET")
 	apiRouter.HandleFunc("/projects", projectHandler.Create).Methods("POST")
 	apiRouter.HandleFunc("/projects/{id:[0-9]+}", projectHandler.Update).Methods("PUT")
 	apiRouter.HandleFunc("/projects/{id:[0-9]+}", projectHandler.Delete).Methods("DELETE")

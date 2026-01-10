@@ -57,6 +57,25 @@ func (h *ProjectHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(project)
 }
 
+func (h *ProjectHandler) GetBySlug(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+
+	project, err := h.service.GetBySlug(slug)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if project == nil {
+		http.Error(w, "Project not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(project)
+}
+
 func (h *ProjectHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var req domain.CreateProjectRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
