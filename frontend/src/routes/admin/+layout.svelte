@@ -4,21 +4,17 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
 
-    onMount(async () => {
-        await checkAuth();
-
-        const unsubscribe = auth.subscribe((state) => {
-            if (
-                !state.loading &&
-                !state.isAuthenticated &&
-                $page.url.pathname !== "/admin/login"
-            ) {
-                goto("/admin/login");
-            }
-        });
-
-        return unsubscribe;
+    onMount(() => {
+        checkAuth();
     });
+
+    $: if (
+        !$auth.loading &&
+        !$auth.isAuthenticated &&
+        $page.url.pathname !== "/admin/login"
+    ) {
+        goto("/admin/login");
+    }
 </script>
 
 {#if $auth.loading}

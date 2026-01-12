@@ -1,7 +1,4 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import { onMount } from "svelte";
-
     async function handleLogout() {
         const res = await fetch("http://localhost:8080/api/auth/logout", {
             method: "POST",
