@@ -1,14 +1,14 @@
-# Cyberpunk Portfolio Website
+# Legacy Folio: Software Engineering Portfolio
 
-A modern cyberpunk-styled portfolio website built with SvelteKit frontend and Golang backend, showcasing software engineering skills and projects.
+A prestigious, classical-styled portfolio website inspired by traditional legal archives and academic aesthetics. Built with a SvelteKit frontend and Golang backend, it showcases professional engineering expertise through a refined, legacy-themed interface.
 
 ## Tech Stack
 
 ### Frontend
 - **SvelteKit** - Modern web framework
-- **TailwindCSS** - Utility-first CSS with custom cyberpunk theme
+- **TailwindCSS** - Custom design system for the Legacy Folio aesthetic
 - **TypeScript** - Type-safe development
-- **Cyberpunk Design** - Neon colors, glitch effects, futuristic UI
+- **Classical Design** - Mahogany, Parchment, and Brass color palette with elegant serif typography
 
 ### Backend
 - **Golang** - High-performance backend API
@@ -19,12 +19,13 @@ A modern cyberpunk-styled portfolio website built with SvelteKit frontend and Go
 
 ## Features
 
-- **Resume Display** - Beautiful presentation of experience, education, and skills
-- **Blog System** - Full CRUD API for blog posts with real-time updates
-- **Project Gallery** - Dynamic project showcase with filtering
-- **Contact Form** - User-friendly contact interface
-- **Real-time Updates** - WebSocket integration for live notifications
-- **Cyberpunk Aesthetic** - Neon colors, animations, and futuristic design
+- **Admin CMS** - Full management system for projects and blogs with secure authentication
+- **Archival Gallery** - Dynamic project showcase with a refined, tactile presentation
+- **Legacy Blog** - A sophisticated journal system for technical thoughts and updates
+- **Resume Portfolio** - Elegant display of experience, education, and skills using classical layout principles
+- **Real-time Notifications** - WebSocket integration for live system updates
+- **Tactile UI** - Paper textures, ink-stamped elements, and smooth classical transitions
+- **Responsive Terminal** - Fully responsive dashboard for mobile and desktop management
 
 ## Project Structure
 
@@ -34,8 +35,9 @@ portfolio/
 │   ├── src/
 │   │   ├── lib/
 │   │   │   ├── components/   # Reusable UI components
-│   │   │   ├── stores/       # Mock data stores
+│   │   │   ├── stores/       # Auth and data stores
 │   │   ├── routes/           # SvelteKit routes
+│   │   │   ├── admin/        # Admin CMS routes (Login, Dashboard, Editors)
 │   │   └── app.css          # Cyberpunk theme styles
 │   └── package.json
 ├── backend/                  # Golang API
@@ -45,7 +47,7 @@ portfolio/
 │   │   ├── domain/          # Domain models
 │   │   ├── repository/      # Data access layer
 │   │   ├── service/         # Business logic
-│   │   ├── middleware/      # HTTP middleware
+│   │   ├── middleware/      # Auth, CORS, and logging middleware
 │   │   └── db/              # Database migrations
 │   └── pkg/websocket/       # WebSocket implementation
 └── README.md
@@ -95,23 +97,32 @@ The backend API will be available at `http://localhost:8080` by default.
 
 - `PORT` - Server port (default: 8080)
 - `DB_PATH` - Database file path (default: portfolio.db)
+- `ADMIN_USERNAME` - Admin login username (default: admin)
+- `ADMIN_PASSWORD` - Admin login password (default: password)
+- `JWT_SECRET` - Secret key for JWT signing
 
 ## API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - Login to admin panel
+- `POST /api/auth/logout` - Logout from admin panel
+- `GET /api/auth/check` - Check current authentication status (Protected)
 
 ### Blog Posts
 - `GET /api/blog` - List all blog posts
 - `GET /api/blog/{id}` - Get blog post by ID
 - `GET /api/blog/slug/{slug}` - Get blog post by slug
-- `POST /api/blog` - Create blog post
-- `PUT /api/blog/{id}` - Update blog post
-- `DELETE /api/blog/{id}` - Delete blog post
+- `POST /api/blog` - Create blog post (Protected)
+- `PUT /api/blog/{id}` - Update blog post (Protected)
+- `DELETE /api/blog/{id}` - Delete blog post (Protected)
 
 ### Projects
 - `GET /api/projects` - List all projects
 - `GET /api/projects/{id}` - Get project by ID
-- `POST /api/projects` - Create project
-- `PUT /api/projects/{id}` - Update project
-- `DELETE /api/projects/{id}` - Delete project
+- `GET /api/projects/slug/{slug}` - Get project by slug
+- `POST /api/projects` - Create project (Protected)
+- `PUT /api/projects/{id}` - Update project (Protected)
+- `DELETE /api/projects/{id}` - Delete project (Protected)
 
 ### WebSocket
 - `WS /ws` - WebSocket endpoint for real-time updates
@@ -121,12 +132,12 @@ The backend API will be available at `http://localhost:8080` by default.
 
 ## Design Elements
 
-The portfolio features a cyberpunk aesthetic with:
+The portfolio features a refined, classical aesthetic with:
 
-- **Color Palette**: Neon cyan (#00FFFF), hot pink (#FF00FF), electric blue (#0080FF) on dark backgrounds
-- **Typography**: Futuristic fonts (Orbitron, Rajdhani) with neon text effects
-- **Animations**: Glow effects, scanline overlays, hover transitions
-- **UI Components**: Glassmorphism cards, neon borders, animated gradients
+- **Color Palette**: Rich Mahogany (#2d1b1b), aged Parchment (#fbf9f1), and warm Brass (#947a46)
+- **Typography**: Elegant serifs (Playfair Display, PT Serif) with sophisticated tracking
+- **Textural Detail**: Natural paper textures, ink-stamp effects, and subtle parchment gradients
+- **UI Components**: "Legal folio" cards, tactile borders, and smooth academic transitions
 
 ## Go Skills Showcased
 
@@ -137,7 +148,7 @@ The backend demonstrates:
 - Database operations with SQLite (CRUD with transactions)
 - Concurrent programming (goroutines for WebSocket message handling)
 - Clean architecture with separation of concerns (domain, repository, service, API layers)
-- Middleware pattern (CORS, logging)
+- Middleware pattern (CORS, logging, and JWT/Session authentication)
 - Error handling best practices
 - Structured logging
 
