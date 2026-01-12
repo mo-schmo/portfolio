@@ -54,26 +54,34 @@ func main() {
 
 	// Apply middleware
 	r.Use(middleware.Logging)
-	r.Use(middleware.CORS)
 
 	// API routes
 	apiRouter := r.PathPrefix("/api").Subrouter()
+
+	// Auth routes
+	apiRouter.HandleFunc("/auth/login", api.Login).Methods("POST")
+	apiRouter.HandleFunc("/auth/logout", api.Logout).Methods("POST")
+	apiRouter.HandleFunc("/auth/check", middleware.Auth(http.HandlerFunc(api.CheckAuth)).ServeHTTP).Methods("GET")
 
 	// Blog routes
 	apiRouter.HandleFunc("/blog", blogHandler.GetAll).Methods("GET")
 	apiRouter.HandleFunc("/blog/{id:[0-9]+}", blogHandler.GetByID).Methods("GET")
 	apiRouter.HandleFunc("/blog/slug/{slug}", blogHandler.GetBySlug).Methods("GET")
-	apiRouter.HandleFunc("/blog", blogHandler.Create).Methods("POST")
-	apiRouter.HandleFunc("/blog/{id:[0-9]+}", blogHandler.Update).Methods("PUT")
-	apiRouter.HandleFunc("/blog/{id:[0-9]+}", blogHandler.Delete).Methods("DELETE")
+
+	// Protected Blog routes
+	apiRouter.Handle("/blog", middleware.Auth(http.HandlerFunc(blogHandler.Create))).Methods("POST")
+	apiRouter.Handle("/blog/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(blogHandler.Update))).Methods("PUT")
+	apiRouter.Handle("/blog/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(blogHandler.Delete))).Methods("DELETE")
 
 	// Project routes
 	apiRouter.HandleFunc("/projects", projectHandler.GetAll).Methods("GET")
 	apiRouter.HandleFunc("/projects/{id:[0-9]+}", projectHandler.GetByID).Methods("GET")
 	apiRouter.HandleFunc("/projects/slug/{slug}", projectHandler.GetBySlug).Methods("GET")
-	apiRouter.HandleFunc("/projects", projectHandler.Create).Methods("POST")
-	apiRouter.HandleFunc("/projects/{id:[0-9]+}", projectHandler.Update).Methods("PUT")
-	apiRouter.HandleFunc("/projects/{id:[0-9]+}", projectHandler.Delete).Methods("DELETE")
+
+	// Protected Project routes
+	apiRouter.Handle("/projects", middleware.Auth(http.HandlerFunc(projectHandler.Create))).Methods("POST")
+	apiRouter.Handle("/projects/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(projectHandler.Update))).Methods("PUT")
+	apiRouter.Handle("/projects/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(projectHandler.Delete))).Methods("DELETE")
 
 	// WebSocket route
 	r.HandleFunc("/ws", wsHub.HandleWebSocket)
@@ -90,5 +98,5 @@ func main() {
 	}
 
 	log.Printf("Server starting on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	log.Fatal(http.ListenAndServe(":"+port, middleware.CORS(r)))
 }

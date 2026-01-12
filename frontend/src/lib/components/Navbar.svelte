@@ -1,6 +1,12 @@
 <script lang="ts">
     import { page } from "$app/stores";
+    import { auth, checkAuth } from "$lib/stores/auth";
     import { slide } from "svelte/transition";
+    import { onMount } from "svelte";
+
+    onMount(async () => {
+        await checkAuth();
+    });
 
     const navItems = [
         { href: "/", label: "Home" },
@@ -8,6 +14,10 @@
         { href: "/blog", label: "Blog" },
         { href: "/contact", label: "Contact" },
     ];
+
+    $: allNavItems = $auth.isAuthenticated
+        ? [...navItems, { href: "/admin", label: "Admin" }]
+        : navItems;
 
     let isMobileMenuOpen = false;
 
@@ -36,7 +46,7 @@
 
             <div class="hidden md:flex items-center space-x-12">
                 <ul class="flex space-x-12">
-                    {#each navItems as item}
+                    {#each allNavItems as item}
                         <li>
                             <a
                                 href={item.href}
@@ -100,7 +110,7 @@
             class="md:hidden border-t border-paper-line bg-parchment"
         >
             <ul class="flex flex-col px-4 py-8 space-y-6">
-                {#each navItems as item}
+                {#each allNavItems as item}
                     <li>
                         <a
                             href={item.href}

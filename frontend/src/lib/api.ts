@@ -61,3 +61,18 @@ export async function fetchProjectBySlug(slug: string): Promise<Project> {
     }
     return response.json();
 }
+export async function fetchBlogById(id: string | number): Promise<BlogPost> {
+    const response = await fetch(`${BASE_URL}/blog/${id}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch blog post');
+    }
+    return response.json();
+}
+
+export async function fetchProjectById(id: string | number): Promise<Project> {
+    const response = await fetch(`${BASE_URL}/projects/${id}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch project');
+    }
+    return response.json();
+}
