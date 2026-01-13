@@ -45,3 +45,7 @@ func (h *WebSocketHub) Broadcast(message ws.Message) {
 func (h *WebSocketHub) Run() {
 	h.hub.Run()
 }
+
+func (h *WebSocketHub) GetHub() *ws.Hub {
+	return h.hub
+}

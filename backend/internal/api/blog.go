@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"portfolio-backend/internal/domain"
 	"portfolio-backend/internal/service"
-	"portfolio-backend/pkg/websocket"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -90,10 +89,6 @@ func (h *BlogHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Broadcast new post via WebSocket
-	h.wsHub.Broadcast(websocket.Message{
-		Type:    "blog_created",
-		Payload: post,
-	})
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -126,10 +121,6 @@ func (h *BlogHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Broadcast update via WebSocket
-	h.wsHub.Broadcast(websocket.Message{
-		Type:    "blog_updated",
-		Payload: post,
-	})
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(post)
@@ -149,12 +140,6 @@ func (h *BlogHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Broadcast deletion via WebSocket
-	h.wsHub.Broadcast(websocket.Message{
-		Type: "blog_deleted",
-		Payload: map[string]interface{}{
-			"id": id,
-		},
-	})
 
 	w.WriteHeader(http.StatusNoContent)
 }

@@ -26,12 +26,14 @@ func (h *Hub) Run() {
 		case client := <-h.register:
 			h.clients[client] = true
 			log.Printf("Client connected. Total clients: %d", len(h.clients))
+			h.broadcastCount()
 
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.send)
 				log.Printf("Client disconnected. Total clients: %d", len(h.clients))
+				h.broadcastCount()
 			}
 
 		case message := <-h.broadcast:
@@ -53,4 +55,16 @@ func (h *Hub) Register(client *Client) {
 
 func (h *Hub) Broadcast(message Message) {
 	h.broadcast <- message
+}
+
+func (h *Hub) broadcastCount() {
+	count := len(h.clients)
+	msg := Message{
+		Type:    "census_update",
+		Payload: map[string]int{"count": count},
+	}
+	// Send message asynchronously to avoid blocking the main loop
+	go func() {
+		h.broadcast <- msg
+	}()
 }

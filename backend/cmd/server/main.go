@@ -37,13 +37,13 @@ func main() {
 	blogRepo := repository.NewBlogRepository(sqliteDB)
 	projectRepo := repository.NewProjectRepository(sqliteDB)
 
-	// Initialize services
-	blogService := service.NewBlogService(blogRepo)
-	projectService := service.NewProjectService(projectRepo)
-
 	// Initialize WebSocket hub
 	wsHub := api.NewWebSocketHub()
 	go wsHub.Run()
+
+	// Initialize services
+	blogService := service.NewBlogService(blogRepo, wsHub.GetHub())
+	projectService := service.NewProjectService(projectRepo, wsHub.GetHub())
 
 	// Initialize handlers
 	blogHandler := api.NewBlogHandler(blogService, wsHub)

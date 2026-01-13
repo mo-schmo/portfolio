@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"portfolio-backend/internal/domain"
 	"portfolio-backend/internal/repository"
+	"portfolio-backend/pkg/websocket"
 )
 
 type ProjectService struct {
 	repo *repository.ProjectRepository
+	hub  *websocket.Hub
 }
 
-func NewProjectService(repo *repository.ProjectRepository) *ProjectService {
-	return &ProjectService{repo: repo}
+func NewProjectService(repo *repository.ProjectRepository, hub *websocket.Hub) *ProjectService {
+	return &ProjectService{repo: repo, hub: hub}
 }
 
 func (s *ProjectService) GetAll() ([]domain.Project, error) {
@@ -49,6 +51,12 @@ func (s *ProjectService) Create(req domain.CreateProjectRequest) (*domain.Projec
 		return nil, err
 	}
 
+	// Broadcast creation event
+	s.hub.Broadcast(websocket.Message{
+		Type:    "project_created",
+		Payload: project,
+	})
+
 	return project, nil
 }
 
@@ -81,9 +89,27 @@ func (s *ProjectService) Update(id int, req domain.UpdateProjectRequest) (*domai
 		return nil, err
 	}
 
+	// Broadcast update event
+	s.hub.Broadcast(websocket.Message{
+		Type:    "project_updated",
+		Payload: project,
+	})
+
 	return project, nil
 }
 
 func (s *ProjectService) Delete(id int) error {
-	return s.repo.Delete(id)
+	err := s.repo.Delete(id)
+
+	if err == nil {
+		// Broadcast deletion
+		s.hub.Broadcast(websocket.Message{
+			Type: "project_deleted",
+			Payload: map[string]int{
+				"id": id,
+			},
+		})
+	}
+
+	return err
 }

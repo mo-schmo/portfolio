@@ -4,16 +4,18 @@ import (
 	"fmt"
 	"portfolio-backend/internal/domain"
 	"portfolio-backend/internal/repository"
+	"portfolio-backend/pkg/websocket"
 	"strings"
 	"time"
 )
 
 type BlogService struct {
 	repo *repository.BlogRepository
+	hub  *websocket.Hub
 }
 
-func NewBlogService(repo *repository.BlogRepository) *BlogService {
-	return &BlogService{repo: repo}
+func NewBlogService(repo *repository.BlogRepository, hub *websocket.Hub) *BlogService {
+	return &BlogService{repo: repo, hub: hub}
 }
 
 func (s *BlogService) GetAll() ([]domain.BlogPost, error) {
@@ -30,7 +32,7 @@ func (s *BlogService) GetBySlug(slug string) (*domain.BlogPost, error) {
 
 func (s *BlogService) Create(req domain.CreateBlogPostRequest) (*domain.BlogPost, error) {
 	slug := generateSlug(req.Title)
-	
+
 	// Ensure slug is unique
 	existing, _ := s.repo.GetBySlug(slug)
 	counter := 1
@@ -57,6 +59,12 @@ func (s *BlogService) Create(req domain.CreateBlogPostRequest) (*domain.BlogPost
 		return nil, err
 	}
 
+	// Broadcast creation
+	s.hub.Broadcast(websocket.Message{
+		Type:    "blog_created",
+		Payload: post,
+	})
+
 	return post, nil
 }
 
@@ -79,11 +87,27 @@ func (s *BlogService) Update(id int, req domain.UpdateBlogPostRequest) (*domain.
 		return nil, err
 	}
 
+	// Broadcast update
+	s.hub.Broadcast(websocket.Message{
+		Type:    "blog_updated",
+		Payload: post,
+	})
+
 	return post, nil
 }
 
 func (s *BlogService) Delete(id int) error {
-	return s.repo.Delete(id)
+	err := s.repo.Delete(id)
+	if err == nil {
+		// Broadcast deletion
+		s.hub.Broadcast(websocket.Message{
+			Type: "blog_deleted",
+			Payload: map[string]int{
+				"id": id,
+			},
+		})
+	}
+	return err
 }
 
 func generateSlug(title string) string {
