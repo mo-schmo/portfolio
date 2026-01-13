@@ -9,7 +9,7 @@
 
     onMount(async () => {
         try {
-            blogs = await fetchAllBlogs();
+            blogs = (await fetchAllBlogs()) || [];
         } catch (e) {
             error = "Failed to retrieve briefing archives.";
         } finally {

@@ -25,7 +25,7 @@ func (r *BlogRepository) GetAll() ([]domain.BlogPost, error) {
 	}
 	defer rows.Close()
 
-	var posts []domain.BlogPost
+	posts := make([]domain.BlogPost, 0)
 	for rows.Next() {
 		var post domain.BlogPost
 		err := rows.Scan(

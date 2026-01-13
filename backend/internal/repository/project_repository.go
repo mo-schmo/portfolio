@@ -25,7 +25,7 @@ func (r *ProjectRepository) GetAll() ([]domain.Project, error) {
 	}
 	defer rows.Close()
 
-	var projects []domain.Project
+	projects := make([]domain.Project, 0)
 	for rows.Next() {
 		var project domain.Project
 		var technologiesStr string

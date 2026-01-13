@@ -9,7 +9,7 @@
 
     onMount(async () => {
         try {
-            projects = await fetchAllProjects();
+            projects = (await fetchAllProjects()) || [];
         } catch (e) {
             error = "Failed to retrieve project archives.";
         } finally {
