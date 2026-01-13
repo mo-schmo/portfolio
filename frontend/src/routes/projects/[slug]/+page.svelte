@@ -232,7 +232,7 @@
                             <div
                                 class="text-[10px] font-display font-bold tracking-[0.5em] uppercase mt-2"
                             >
-                                Counsel & Engineer
+                                Engineer
                             </div>
                         </div>
                     </div>

@@ -27,6 +27,16 @@
 				"Automated onboarding workflows with DevOps scripting to accelerate developer setup",
 			],
 		},
+		{
+			title: "Legal Assistant",
+			company: "AT LAW GROUP, Dearborn MI",
+			period: "June 2019 – Jan 2021",
+			achievements: [
+				"Drafted case evaluation summaries for mediation and litigation support in personal injury matters",
+				"Conducted legal research and supported attorneys in preparing discovery and settlement documents",
+				"Maintained client communications, coordinated with medical providers and insurers, and managed case files",
+			],
+		},
 	];
 
 	const skills = {
@@ -80,7 +90,7 @@
 			<div
 				class="text-xl md:text-2xl text-brass font-display font-bold mb-8 uppercase tracking-[0.3em]"
 			>
-				Software Engineer & Counsel
+				Software Engineer
 			</div>
 			<div class="w-32 h-1 bg-mahogany mx-auto mb-10"></div>
 			<div
