@@ -1,5 +1,6 @@
 import { browser } from "$app/environment";
 import { writable } from "svelte/store";
+import { PUBLIC_WS_URL } from '$env/static/public';
 
 
 export const wsStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
@@ -21,7 +22,7 @@ export function initWebSocket() {
     // Handle different environments
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const host = window.location.hostname === 'localhost' ? 'localhost:8080' : window.location.host;
-    const wsUrl = `${protocol}://${host}/ws`
+    const wsUrl = PUBLIC_WS_URL || `${protocol}://${host}/ws`
 
     socket = new WebSocket(wsUrl);
 
