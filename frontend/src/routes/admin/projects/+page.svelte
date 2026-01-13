@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fetchAllProjects } from "$lib/api";
+    import { fetchAllProjects, BASE_URL } from "$lib/api";
     import type { Project } from "$lib/api";
 
     let projects: Project[] = [];
@@ -27,13 +27,10 @@
         }
 
         try {
-            const res = await fetch(
-                `http://localhost:8080/api/projects/${id}`,
-                {
-                    method: "DELETE",
-                    credentials: "include",
-                },
-            );
+            const res = await fetch(`${BASE_URL}/projects/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
 
             if (res.ok) {
                 projects = projects.filter((p) => p.id !== id);

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fetchAllBlogs } from "$lib/api";
+    import { fetchAllBlogs, BASE_URL } from "$lib/api";
     import type { BlogPost } from "$lib/api";
 
     let blogs: BlogPost[] = [];
@@ -27,7 +27,7 @@
         }
 
         try {
-            const res = await fetch(`http://localhost:8080/api/blog/${id}`, {
+            const res = await fetch(`${BASE_URL}/blog/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });

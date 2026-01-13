@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+    import { BASE_URL } from "$lib/api";
 
     export let data;
     $: isEdit = data.project !== null;
@@ -54,8 +55,8 @@
         };
 
         const url = isEdit
-            ? `http://localhost:8080/api/projects/${project.id}`
-            : "http://localhost:8080/api/projects";
+            ? `${BASE_URL}/projects/${project.id}`
+            : `${BASE_URL}/projects`;
 
         const method = isEdit ? "PUT" : "POST";
 

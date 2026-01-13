@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+    import { BASE_URL } from "$lib/api";
 
     export let data;
     $: isEdit = data.blog !== null;
@@ -23,9 +24,7 @@
         loading = true;
         error = "";
 
-        const url = isEdit
-            ? `http://localhost:8080/api/blog/${blog.id}`
-            : "http://localhost:8080/api/blog";
+        const url = isEdit ? `${BASE_URL}/blog/${blog.id}` : `${BASE_URL}/blog`;
 
         const method = isEdit ? "PUT" : "POST";
 

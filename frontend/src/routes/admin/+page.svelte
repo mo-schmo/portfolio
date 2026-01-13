@@ -1,6 +1,8 @@
 <script lang="ts">
+    import { BASE_URL } from "$lib/api";
+
     async function handleLogout() {
-        const res = await fetch("http://localhost:8080/api/auth/logout", {
+        const res = await fetch(`${BASE_URL}/auth/logout`, {
             method: "POST",
             credentials: "include",
         });

@@ -12,9 +12,11 @@ export const auth = writable<AuthState>({
     loading: true
 });
 
+import { BASE_URL } from '$lib/api';
+
 export async function checkAuth() {
     try {
-        const res = await fetch('http://localhost:8080/api/auth/check', {
+        const res = await fetch(`${BASE_URL}/auth/check`, {
             credentials: 'include'
         });
         if (res.ok) {

@@ -1,6 +1,6 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 
-const BASE_URL = PUBLIC_API_URL || 'http://localhost:8080/api';
+export const BASE_URL = PUBLIC_API_URL || 'http://localhost:8080/api';
 
 export interface BlogPost {
     id: number;

@@ -36,8 +36,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   false, // Set to true if using HTTPS
-		SameSite: http.SameSiteLaxMode,
+		Secure:   true,                  // Required for SameSite: None
+		SameSite: http.SameSiteNoneMode, // Required for cross-site cookies (Vercel -> Northflank)
 		Expires:  time.Now().Add(time.Hour * 24),
 	})
 
@@ -53,6 +53,8 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteNoneMode,
 		MaxAge:   -1,
 		Expires:  time.Unix(0, 0),
 	})
