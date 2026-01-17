@@ -40,18 +40,24 @@
 			`,
         );
 
+        // Links: [text](url)
+        html = html.replace(
+            /\[([^\]]+)\]\(([^)]+)\)/g,
+            '<a href="$2" target="_blank" class="text-mahogany font-bold hover:text-brass transition-colors border-b border-mahogany/30 hover:border-brass">$1</a>',
+        );
+
         // Headers
         html = html.replace(
             /^### (.*$)/gim,
-            '<h3 class="text-xl font-display font-black text-mahogany mb-6 mt-16 uppercase tracking-widest border-l-2 border-brass pl-4">$1</h3>',
+            '<h3 class="text-xl font-display font-black text-mahogany mb-6 mt-16 uppercase tracking-widest border-l-2 border-brass pl-4">$1</h3>\n\n',
         );
         html = html.replace(
             /^## (.*$)/gim,
-            '<div class="folio-divider"></div><h2 class="text-3xl font-display font-black text-mahogany mb-10 mt-20 uppercase tracking-tight">$1</h2>',
+            '<div class="folio-divider"></div><h2 class="text-3xl font-display font-black text-mahogany mb-10 mt-20 uppercase tracking-tight">$1</h2>\n\n',
         );
         html = html.replace(
             /^# (.*$)/gim,
-            '<h1 class="text-5xl font-display font-black text-mahogany mb-12 mt-24 uppercase tracking-tighter border-l-4 border-mahogany pl-8">$1</h1>',
+            '<h1 class="text-5xl font-display font-black text-mahogany mb-12 mt-24 uppercase tracking-tighter border-l-4 border-mahogany pl-8">$1</h1>\n\n',
         );
 
         // Bold and italic
@@ -65,7 +71,7 @@
         );
 
         // Paragraphs
-        const paragraphs = html.split(/\n\n+/);
+        const paragraphs = html.split(/\n\s*\n/);
         html = paragraphs
             .map((p) => p.trim())
             .filter((p) => p.length > 0)
@@ -77,7 +83,7 @@
                 ) {
                     return p;
                 }
-                return `<p class="mb-10 text-ink/90 leading-[1.9] text-xl font-serif text-justify tracking-tight">${p.replace(/\n/gim, "<br/>")}</p>`;
+                return `<p class="mb-10 text-ink/90 leading-[1.9] text-xl font-serif text-justify tracking-tight">${p.replace(/\n/g, "<br/>")}</p>`;
             })
             .join("");
 
@@ -257,13 +263,6 @@
 <style>
     :global(.case-content img) {
         @apply rounded-none shadow-2xl;
-    }
-
-    :global(.case-content p:first-of-type::first-letter) {
-        font-family: "Playfair Display", serif;
-        @apply text-6xl md:text-8xl text-mahogany font-black mr-1;
-        line-height: 0;
-        vertical-align: middle;
     }
 
     :global(.folio-divider::after) {
