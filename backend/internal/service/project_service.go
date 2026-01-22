@@ -20,8 +20,16 @@ func (s *ProjectService) GetAll() ([]domain.Project, error) {
 	return s.repo.GetAll()
 }
 
+func (s *ProjectService) GetAllAdmin() ([]domain.Project, error) {
+	return s.repo.GetAllAdmin()
+}
+
 func (s *ProjectService) GetByID(id int) (*domain.Project, error) {
 	return s.repo.GetByID(id)
+}
+
+func (s *ProjectService) GetByIDAdmin(id int) (*domain.Project, error) {
+	return s.repo.GetByIDAdmin(id)
 }
 
 func (s *ProjectService) GetBySlug(slug string) (*domain.Project, error) {
@@ -44,6 +52,7 @@ func (s *ProjectService) Create(req domain.CreateProjectRequest) (*domain.Projec
 		LiveURL:      req.LiveURL,
 		Technologies: string(technologiesJSON),
 		Featured:     req.Featured,
+		IsDraft:      req.IsDraft,
 	}
 
 	err = s.repo.Create(project)
@@ -61,7 +70,8 @@ func (s *ProjectService) Create(req domain.CreateProjectRequest) (*domain.Projec
 }
 
 func (s *ProjectService) Update(id int, req domain.UpdateProjectRequest) (*domain.Project, error) {
-	project, err := s.repo.GetByID(id)
+	// For update, we use GetByIDAdmin to handle drafts
+	project, err := s.repo.GetByIDAdmin(id)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +93,7 @@ func (s *ProjectService) Update(id int, req domain.UpdateProjectRequest) (*domai
 	project.LiveURL = req.LiveURL
 	project.Technologies = string(technologiesJSON)
 	project.Featured = req.Featured
+	project.IsDraft = req.IsDraft
 
 	err = s.repo.Update(project)
 	if err != nil {

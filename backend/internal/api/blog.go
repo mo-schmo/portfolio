@@ -33,6 +33,17 @@ func (h *BlogHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(posts)
 }
 
+func (h *BlogHandler) GetAllAdmin(w http.ResponseWriter, r *http.Request) {
+	posts, err := h.service.GetAllAdmin()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(posts)
+}
+
 func (h *BlogHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -42,6 +53,29 @@ func (h *BlogHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	post, err := h.service.GetByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if post == nil {
+		http.Error(w, "Post not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(post)
+}
+
+func (h *BlogHandler) GetByIDAdmin(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	post, err := h.service.GetByIDAdmin(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

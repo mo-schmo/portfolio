@@ -33,6 +33,17 @@ func (h *ProjectHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(projects)
 }
 
+func (h *ProjectHandler) GetAllAdmin(w http.ResponseWriter, r *http.Request) {
+	projects, err := h.service.GetAllAdmin()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(projects)
+}
+
 func (h *ProjectHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -42,6 +53,29 @@ func (h *ProjectHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	project, err := h.service.GetByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if project == nil {
+		http.Error(w, "Project not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(project)
+}
+
+func (h *ProjectHandler) GetByIDAdmin(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	project, err := h.service.GetByIDAdmin(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

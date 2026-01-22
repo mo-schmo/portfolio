@@ -15,6 +15,7 @@ type Project struct {
 	Featured     bool      `json:"featured" db:"featured"`
 	CreatedAt    time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt    time.Time `json:"updatedAt" db:"updated_at"`
+	IsDraft      bool      `json:"isDraft" db:"is_draft"`
 }
 
 type CreateProjectRequest struct {
@@ -27,6 +28,7 @@ type CreateProjectRequest struct {
 	LiveURL      *string  `json:"liveUrl,omitempty"`
 	Technologies []string `json:"technologies"`
 	Featured     bool     `json:"featured"`
+	IsDraft      bool     `json:"isDraft"`
 }
 
 type UpdateProjectRequest struct {
@@ -39,4 +41,5 @@ type UpdateProjectRequest struct {
 	LiveURL      *string  `json:"liveUrl,omitempty"`
 	Technologies []string `json:"technologies"`
 	Featured     bool     `json:"featured"`
+	IsDraft      bool     `json:"isDraft"`
 }

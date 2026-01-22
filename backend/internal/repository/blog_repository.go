@@ -16,8 +16,9 @@ func NewBlogRepository(db *sql.DB) *BlogRepository {
 
 func (r *BlogRepository) GetAll() ([]domain.BlogPost, error) {
 	rows, err := r.db.Query(`
-		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at
+		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at, is_draft
 		FROM blog_posts
+		WHERE is_draft = 0
 		ORDER BY published_at DESC
 	`)
 	if err != nil {
@@ -30,7 +31,34 @@ func (r *BlogRepository) GetAll() ([]domain.BlogPost, error) {
 		var post domain.BlogPost
 		err := rows.Scan(
 			&post.ID, &post.Title, &post.Slug, &post.Excerpt,
-			&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt,
+			&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt, &post.IsDraft,
+		)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, rows.Err()
+}
+
+func (r *BlogRepository) GetAllAdmin() ([]domain.BlogPost, error) {
+	rows, err := r.db.Query(`
+		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at, is_draft
+		FROM blog_posts
+		ORDER BY created_at DESC
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	posts := make([]domain.BlogPost, 0)
+	for rows.Next() {
+		var post domain.BlogPost
+		err := rows.Scan(
+			&post.ID, &post.Title, &post.Slug, &post.Excerpt,
+			&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt, &post.IsDraft,
 		)
 		if err != nil {
 			return nil, err
@@ -44,12 +72,31 @@ func (r *BlogRepository) GetAll() ([]domain.BlogPost, error) {
 func (r *BlogRepository) GetByID(id int) (*domain.BlogPost, error) {
 	var post domain.BlogPost
 	err := r.db.QueryRow(`
-		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at
+		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at, is_draft
+		FROM blog_posts
+		WHERE id = ? AND is_draft = 0
+	`, id).Scan(
+		&post.ID, &post.Title, &post.Slug, &post.Excerpt,
+		&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt, &post.IsDraft,
+	)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &post, nil
+}
+
+func (r *BlogRepository) GetByIDAdmin(id int) (*domain.BlogPost, error) {
+	var post domain.BlogPost
+	err := r.db.QueryRow(`
+		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at, is_draft
 		FROM blog_posts
 		WHERE id = ?
 	`, id).Scan(
 		&post.ID, &post.Title, &post.Slug, &post.Excerpt,
-		&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt,
+		&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt, &post.IsDraft,
 	)
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -63,12 +110,12 @@ func (r *BlogRepository) GetByID(id int) (*domain.BlogPost, error) {
 func (r *BlogRepository) GetBySlug(slug string) (*domain.BlogPost, error) {
 	var post domain.BlogPost
 	err := r.db.QueryRow(`
-		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at
+		SELECT id, title, slug, excerpt, content, published_at, created_at, updated_at, is_draft
 		FROM blog_posts
-		WHERE slug = ?
+		WHERE slug = ? AND is_draft = 0
 	`, slug).Scan(
 		&post.ID, &post.Title, &post.Slug, &post.Excerpt,
-		&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt,
+		&post.Content, &post.PublishedAt, &post.CreatedAt, &post.UpdatedAt, &post.IsDraft,
 	)
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -88,9 +135,9 @@ func (r *BlogRepository) Create(post *domain.BlogPost) error {
 	}
 
 	result, err := r.db.Exec(`
-		INSERT INTO blog_posts (title, slug, excerpt, content, published_at, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`, post.Title, post.Slug, post.Excerpt, post.Content, post.PublishedAt, post.CreatedAt, post.UpdatedAt)
+		INSERT INTO blog_posts (title, slug, excerpt, content, published_at, created_at, updated_at, is_draft)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	`, post.Title, post.Slug, post.Excerpt, post.Content, post.PublishedAt, post.CreatedAt, post.UpdatedAt, post.IsDraft)
 	if err != nil {
 		return err
 	}
@@ -107,9 +154,9 @@ func (r *BlogRepository) Update(post *domain.BlogPost) error {
 	post.UpdatedAt = time.Now()
 	_, err := r.db.Exec(`
 		UPDATE blog_posts
-		SET title = ?, slug = ?, excerpt = ?, content = ?, published_at = ?, updated_at = ?
+		SET title = ?, slug = ?, excerpt = ?, content = ?, published_at = ?, updated_at = ?, is_draft = ?
 		WHERE id = ?
-	`, post.Title, post.Slug, post.Excerpt, post.Content, post.PublishedAt, post.UpdatedAt, post.ID)
+	`, post.Title, post.Slug, post.Excerpt, post.Content, post.PublishedAt, post.UpdatedAt, post.IsDraft, post.ID)
 	return err
 }
 

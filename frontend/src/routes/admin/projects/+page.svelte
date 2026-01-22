@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fetchAllProjects, BASE_URL } from "$lib/api";
+    import { fetchAllProjectsAdmin, BASE_URL } from "$lib/api";
     import type { Project } from "$lib/api";
 
     let projects: Project[] = [];
@@ -9,7 +9,7 @@
 
     onMount(async () => {
         try {
-            projects = (await fetchAllProjects()) || [];
+            projects = (await fetchAllProjectsAdmin()) || [];
         } catch (e) {
             error = "Failed to retrieve project archives.";
         } finally {
@@ -151,7 +151,12 @@
                                     >{project.slug}</td
                                 >
                                 <td class="px-8 py-6">
-                                    {#if project.featured}
+                                    {#if project.isDraft}
+                                        <span
+                                            class="px-2 py-0.5 border border-mahogany/30 text-mahogany text-[9px] font-display font-bold uppercase tracking-widest rounded-sm bg-mahogany/5"
+                                            >Draft</span
+                                        >
+                                    {:else if project.featured}
                                         <span
                                             class="px-2 py-0.5 border border-brass/30 text-brass text-[9px] font-display font-bold uppercase tracking-widest rounded-sm"
                                             >Featured</span

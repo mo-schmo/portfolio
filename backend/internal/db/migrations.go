@@ -16,7 +16,8 @@ func Migrate(db *sql.DB) error {
 		content TEXT NOT NULL,
 		published_at DATETIME NOT NULL,
 		created_at DATETIME NOT NULL,
-		updated_at DATETIME NOT NULL
+		updated_at DATETIME NOT NULL,
+		is_draft BOOLEAN NOT NULL DEFAULT 0
 	);
 	`
 
@@ -34,7 +35,8 @@ func Migrate(db *sql.DB) error {
 		technologies TEXT NOT NULL,
 		featured BOOLEAN NOT NULL DEFAULT 0,
 		created_at DATETIME NOT NULL,
-		updated_at DATETIME NOT NULL
+		updated_at DATETIME NOT NULL,
+		is_draft BOOLEAN NOT NULL DEFAULT 0
 	);
 	`
 
@@ -51,6 +53,18 @@ func Migrate(db *sql.DB) error {
 	// Ensure slug and content columns exist for existing tables
 	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN slug TEXT NOT NULL DEFAULT ''")
 	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN content TEXT NOT NULL DEFAULT ''")
+	
+	// Add is_draft column if not exists
+	var count int
+	err := db.QueryRow("SELECT count(*) FROM pragma_table_info('blog_posts') WHERE name='is_draft'").Scan(&count)
+	if err == nil && count == 0 {
+		_, _ = db.Exec("ALTER TABLE blog_posts ADD COLUMN is_draft BOOLEAN NOT NULL DEFAULT 0")
+	}
+
+	err = db.QueryRow("SELECT count(*) FROM pragma_table_info('projects') WHERE name='is_draft'").Scan(&count)
+	if err == nil && count == 0 {
+		_, _ = db.Exec("ALTER TABLE projects ADD COLUMN is_draft BOOLEAN NOT NULL DEFAULT 0")
+	}
 
 	// Populate empty slugs for existing projects
 	_, _ = db.Exec("UPDATE projects SET slug = lower(replace(title, ' ', '-')) WHERE slug = '' OR slug IS NULL")

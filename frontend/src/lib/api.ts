@@ -9,6 +9,7 @@ export interface BlogPost {
     excerpt: string;
     content: string;
     publishedAt: string;
+    isDraft: boolean;
 }
 
 export interface Project {
@@ -24,10 +25,19 @@ export interface Project {
     featured: boolean;
     createdAt: string;
     updatedAt: string;
+    isDraft: boolean;
 }
 
 export async function fetchAllBlogs(): Promise<BlogPost[]> {
     const response = await fetch(`${BASE_URL}/blog`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch blogs');
+    }
+    return response.json();
+}
+
+export async function fetchAllBlogsAdmin(fetch = window.fetch): Promise<BlogPost[]> {
+    const response = await fetch(`${BASE_URL}/admin/blog`, { credentials: 'include' });
     if (!response.ok) {
         throw new Error('Failed to fetch blogs');
     }
@@ -53,6 +63,14 @@ export async function fetchAllProjects(): Promise<Project[]> {
     return response.json();
 }
 
+export async function fetchAllProjectsAdmin(fetch = window.fetch): Promise<Project[]> {
+    const response = await fetch(`${BASE_URL}/admin/projects`, { credentials: 'include' });
+    if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+    }
+    return response.json();
+}
+
 export async function fetchProjectBySlug(slug: string): Promise<Project> {
     const response = await fetch(`${BASE_URL}/projects/slug/${slug}`);
     if (!response.ok) {
@@ -63,6 +81,7 @@ export async function fetchProjectBySlug(slug: string): Promise<Project> {
     }
     return response.json();
 }
+
 export async function fetchBlogById(id: string | number): Promise<BlogPost> {
     const response = await fetch(`${BASE_URL}/blog/${id}`);
     if (!response.ok) {
@@ -71,8 +90,24 @@ export async function fetchBlogById(id: string | number): Promise<BlogPost> {
     return response.json();
 }
 
+export async function fetchBlogByIdAdmin(id: string | number, fetch = window.fetch): Promise<BlogPost> {
+    const response = await fetch(`${BASE_URL}/admin/blog/${id}`, { credentials: 'include' });
+    if (!response.ok) {
+        throw new Error('Failed to fetch blog post');
+    }
+    return response.json();
+}
+
 export async function fetchProjectById(id: string | number): Promise<Project> {
     const response = await fetch(`${BASE_URL}/projects/${id}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch project');
+    }
+    return response.json();
+}
+
+export async function fetchProjectByIdAdmin(id: string | number, fetch = window.fetch): Promise<Project> {
+    const response = await fetch(`${BASE_URL}/admin/projects/${id}`, { credentials: 'include' });
     if (!response.ok) {
         throw new Error('Failed to fetch project');
     }

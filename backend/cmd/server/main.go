@@ -63,6 +63,12 @@ func main() {
 	apiRouter.HandleFunc("/auth/logout", api.Logout).Methods("POST")
 	apiRouter.HandleFunc("/auth/check", middleware.Auth(http.HandlerFunc(api.CheckAuth)).ServeHTTP).Methods("GET")
 
+	// Admin routes (Drafts included)
+	apiRouter.Handle("/admin/blog", middleware.Auth(http.HandlerFunc(blogHandler.GetAllAdmin))).Methods("GET")
+	apiRouter.Handle("/admin/blog/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(blogHandler.GetByIDAdmin))).Methods("GET")
+	apiRouter.Handle("/admin/projects", middleware.Auth(http.HandlerFunc(projectHandler.GetAllAdmin))).Methods("GET")
+	apiRouter.Handle("/admin/projects/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(projectHandler.GetByIDAdmin))).Methods("GET")
+
 	// Blog routes
 	apiRouter.HandleFunc("/blog", blogHandler.GetAll).Methods("GET")
 	apiRouter.HandleFunc("/blog/{id:[0-9]+}", blogHandler.GetByID).Methods("GET")

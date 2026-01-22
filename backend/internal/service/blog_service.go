@@ -22,8 +22,16 @@ func (s *BlogService) GetAll() ([]domain.BlogPost, error) {
 	return s.repo.GetAll()
 }
 
+func (s *BlogService) GetAllAdmin() ([]domain.BlogPost, error) {
+	return s.repo.GetAllAdmin()
+}
+
 func (s *BlogService) GetByID(id int) (*domain.BlogPost, error) {
 	return s.repo.GetByID(id)
+}
+
+func (s *BlogService) GetByIDAdmin(id int) (*domain.BlogPost, error) {
+	return s.repo.GetByIDAdmin(id)
 }
 
 func (s *BlogService) GetBySlug(slug string) (*domain.BlogPost, error) {
@@ -52,6 +60,7 @@ func (s *BlogService) Create(req domain.CreateBlogPostRequest) (*domain.BlogPost
 		Excerpt:     req.Excerpt,
 		Content:     req.Content,
 		PublishedAt: time.Now(),
+		IsDraft:     req.IsDraft,
 	}
 
 	err := s.repo.Create(post)
@@ -69,7 +78,8 @@ func (s *BlogService) Create(req domain.CreateBlogPostRequest) (*domain.BlogPost
 }
 
 func (s *BlogService) Update(id int, req domain.UpdateBlogPostRequest) (*domain.BlogPost, error) {
-	post, err := s.repo.GetByID(id)
+	// For update, we use GetByIDAdmin because we might be updating a draft
+	post, err := s.repo.GetByIDAdmin(id)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +90,7 @@ func (s *BlogService) Update(id int, req domain.UpdateBlogPostRequest) (*domain.
 	post.Title = req.Title
 	post.Excerpt = req.Excerpt
 	post.Content = req.Content
+	post.IsDraft = req.IsDraft
 	post.Slug = generateSlug(req.Title)
 
 	err = s.repo.Update(post)

@@ -14,6 +14,7 @@
                   excerpt: "",
                   content: "",
                   publishedAt: new Date().toISOString(),
+                  isDraft: true,
               }
     ) as any;
 
@@ -164,6 +165,22 @@
                         rows="15"
                         class="w-full bg-parchment border border-paper-line p-4 md:p-6 text-base leading-relaxed font-serif focus:outline-none focus:border-brass"
                     ></textarea>
+                </div>
+
+                <div
+                    class="flex items-center gap-4 pt-4 border-t border-mahogany/10"
+                >
+                    <input
+                        type="checkbox"
+                        id="isDraft"
+                        bind:checked={blog.isDraft}
+                        class="w-5 h-5 accent-mahogany"
+                    />
+                    <label
+                        for="isDraft"
+                        class="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-mahogany/60"
+                        >Save as Draft (Private)</label
+                    >
                 </div>
             </div>
 

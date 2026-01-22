@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { fetchAllBlogs, BASE_URL } from "$lib/api";
+    import { fetchAllBlogsAdmin, BASE_URL } from "$lib/api";
     import type { BlogPost } from "$lib/api";
 
     let blogs: BlogPost[] = [];
@@ -9,7 +9,7 @@
 
     onMount(async () => {
         try {
-            blogs = (await fetchAllBlogs()) || [];
+            blogs = (await fetchAllBlogsAdmin()) || [];
         } catch (e) {
             error = "Failed to retrieve briefing archives.";
         } finally {
@@ -132,9 +132,15 @@
                                 >
                                 <td class="px-8 py-6">
                                     <div
-                                        class="font-display font-bold text-mahogany uppercase tracking-tight"
+                                        class="font-display font-bold text-mahogany uppercase tracking-tight flex items-center gap-2"
                                     >
                                         {blog.title}
+                                        {#if blog.isDraft}
+                                            <span
+                                                class="px-2 py-0.5 border border-mahogany/30 text-mahogany text-[9px] font-display font-bold uppercase tracking-widest rounded-sm bg-mahogany/5"
+                                                >Draft</span
+                                            >
+                                        {/if}
                                     </div>
                                     <div
                                         class="text-[10px] text-mahogany/40 font-serif italic mt-1"

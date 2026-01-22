@@ -18,6 +18,7 @@
                   liveUrl: "",
                   technologies: "[]",
                   featured: false,
+                  isDraft: true,
               }
     ) as any;
 
@@ -271,6 +272,19 @@
                             >Designate as Featured Exhibit</label
                         >
                     </div>
+                    <div class="flex items-center gap-4">
+                        <input
+                            type="checkbox"
+                            id="isDraft"
+                            bind:checked={project.isDraft}
+                            class="w-5 h-5 accent-mahogany"
+                        />
+                        <label
+                            for="isDraft"
+                            class="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-mahogany/60"
+                            >Save as Draft (Private)</label
+                        >
+                    </div>
                 </div>
             </div>
 
@@ -290,7 +304,7 @@
                     on:click={() => goto("/admin/projects")}
                     class="px-10 py-4 text-[10px] font-display font-bold uppercase tracking-widest text-mahogany/40 hover:text-mahogany transition-colors"
                 >
-                    Discard Draft
+                    Discard Changes
                 </button>
                 <button
                     type="submit"

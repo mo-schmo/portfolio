@@ -11,16 +11,19 @@ type BlogPost struct {
 	PublishedAt time.Time `json:"publishedAt" db:"published_at"`
 	CreatedAt   time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt   time.Time `json:"updatedAt" db:"updated_at"`
+	IsDraft     bool      `json:"isDraft" db:"is_draft"`
 }
 
 type CreateBlogPostRequest struct {
 	Title   string `json:"title"`
 	Excerpt string `json:"excerpt"`
 	Content string `json:"content"`
+	IsDraft bool   `json:"isDraft"`
 }
 
 type UpdateBlogPostRequest struct {
 	Title   string `json:"title"`
 	Excerpt string `json:"excerpt"`
 	Content string `json:"content"`
+	IsDraft bool   `json:"isDraft"`
 }
