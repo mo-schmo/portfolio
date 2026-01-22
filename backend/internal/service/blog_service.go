@@ -69,10 +69,12 @@ func (s *BlogService) Create(req domain.CreateBlogPostRequest) (*domain.BlogPost
 	}
 
 	// Broadcast creation
-	s.hub.Broadcast(websocket.Message{
-		Type:    "blog_created",
-		Payload: post,
-	})
+	if !post.IsDraft {
+		s.hub.Broadcast(websocket.Message{
+			Type:    "blog_created",
+			Payload: post,
+		})
+	}
 
 	return post, nil
 }

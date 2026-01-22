@@ -61,10 +61,12 @@ func (s *ProjectService) Create(req domain.CreateProjectRequest) (*domain.Projec
 	}
 
 	// Broadcast creation event
-	s.hub.Broadcast(websocket.Message{
-		Type:    "project_created",
-		Payload: project,
-	})
+	if !project.IsDraft {
+		s.hub.Broadcast(websocket.Message{
+			Type:    "project_created",
+			Payload: project,
+		})
+	}
 
 	return project, nil
 }
