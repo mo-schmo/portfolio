@@ -24,8 +24,21 @@ export default {
 			},
 			fontFamily: {
 				display: ['Playfair Display', 'serif'],
-				serif: ['PT Serif', 'serif'],
+				// Body serif: Newsreader (contemporary, screen-optimized) with PT Serif fallback.
+				serif: ['Newsreader', 'PT Serif', 'serif'],
+				ptserif: ['PT Serif', 'serif'],
 				mono: ['JetBrains Mono', 'monospace']
+			},
+			fontSize: {
+				'step--1': 'var(--step--1)',
+				'step-0': 'var(--step-0)',
+				'step-1': 'var(--step-1)',
+				'step-2': 'var(--step-2)',
+				'step-3': 'var(--step-3)',
+				'step-4': 'var(--step-4)',
+				'step-5': 'var(--step-5)',
+				'step-6': 'var(--step-6)',
+				'step-7': 'var(--step-7)'
 			}
 		}
 	},
