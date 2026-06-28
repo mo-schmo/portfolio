@@ -23,17 +23,32 @@ from .settings import get_settings
 
 T = TypeVar("T", bound=BaseModel)
 
+_client: AsyncOpenAI | None = None
+
 
 def get_client() -> AsyncOpenAI:
-    settings = get_settings()
-    return AsyncOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=settings.openrouter_api_key or "missing",
-        default_headers={
-            "HTTP-Referer": settings.openrouter_referer,
-            "X-Title": settings.openrouter_app_title,
-        },
-    )
+    """Process-wide singleton OpenAI client pointed at OpenRouter."""
+    global _client
+    if _client is None:
+        settings = get_settings()
+        if not settings.openrouter_api_key:
+            # Fail loudly here instead of letting OpenRouter return an opaque
+            # 401 deep inside a streaming call. The most common cause is the
+            # key not making it from `agents/.env.local` into the container
+            # (check docker-compose `env_file`).
+            raise RuntimeError(
+                "OPENROUTER_API_KEY is not set. Populate it in agents/.env.local "
+                "or export it in the shell before starting the agents service."
+            )
+        _client = AsyncOpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=settings.openrouter_api_key,
+            default_headers={
+                "HTTP-Referer": settings.openrouter_referer,
+                "X-Title": settings.openrouter_app_title,
+            },
+        )
+    return _client
 
 
 @dataclass
@@ -83,46 +98,45 @@ async def stream_chat(
 
     pending_tools: dict[int, dict[str, Any]] = {}
 
-    async with client:
-        stream = await client.chat.completions.create(**kwargs)
-        async for chunk in stream:
-            if not chunk.choices:
-                continue
-            choice = chunk.choices[0]
-            delta = choice.delta
+    stream = await client.chat.completions.create(**kwargs)
+    async for chunk in stream:
+        if not chunk.choices:
+            continue
+        choice = chunk.choices[0]
+        delta = choice.delta
 
-            if delta and delta.content:
-                yield StreamEvent(kind="token", text=delta.content)
+        if delta and delta.content:
+            yield StreamEvent(kind="token", text=delta.content)
 
-            if delta and getattr(delta, "tool_calls", None):
-                for tc in delta.tool_calls:
-                    idx = tc.index if tc.index is not None else 0
-                    bucket = pending_tools.setdefault(
-                        idx,
-                        {"id": None, "name": "", "args": ""},
-                    )
-                    if tc.id:
-                        bucket["id"] = tc.id
-                    if tc.function and tc.function.name:
-                        bucket["name"] = tc.function.name
-                    if tc.function and tc.function.arguments:
-                        bucket["args"] += tc.function.arguments
+        if delta and getattr(delta, "tool_calls", None):
+            for tc in delta.tool_calls:
+                idx = tc.index if tc.index is not None else 0
+                bucket = pending_tools.setdefault(
+                    idx,
+                    {"id": None, "name": "", "args": ""},
+                )
+                if tc.id:
+                    bucket["id"] = tc.id
+                if tc.function and tc.function.name:
+                    bucket["name"] = tc.function.name
+                if tc.function and tc.function.arguments:
+                    bucket["args"] += tc.function.arguments
 
-            if choice.finish_reason:
-                for bucket in pending_tools.values():
-                    parsed: dict[str, Any]
-                    try:
-                        parsed = json.loads(bucket["args"]) if bucket["args"] else {}
-                    except json.JSONDecodeError:
-                        parsed = {"_raw": bucket["args"]}
-                    yield StreamEvent(
-                        kind="tool_call",
-                        tool_name=bucket["name"],
-                        tool_args=parsed,
-                        tool_call_id=bucket["id"],
-                    )
-                pending_tools.clear()
-                yield StreamEvent(kind="finish", finish_reason=choice.finish_reason)
+        if choice.finish_reason:
+            for bucket in pending_tools.values():
+                parsed: dict[str, Any]
+                try:
+                    parsed = json.loads(bucket["args"]) if bucket["args"] else {}
+                except json.JSONDecodeError:
+                    parsed = {"_raw": bucket["args"]}
+                yield StreamEvent(
+                    kind="tool_call",
+                    tool_name=bucket["name"],
+                    tool_args=parsed,
+                    tool_call_id=bucket["id"],
+                )
+            pending_tools.clear()
+            yield StreamEvent(kind="finish", finish_reason=choice.finish_reason)
 
 
 async def complete_json(
@@ -139,12 +153,11 @@ async def complete_json(
     """
 
     client = get_client()
-    async with client:
-        response = await client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-            response_format={"type": "json_object"},
-        )
+    response = await client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+        response_format={"type": "json_object"},
+    )
     content = response.choices[0].message.content or "{}"
     return schema.model_validate_json(content)

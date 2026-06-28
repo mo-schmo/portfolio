@@ -18,6 +18,7 @@
 			title: "Patent Compliance Bench",
 			teaser:
 				"A Drafter, a Reviewer, and a Revisor confer in chambers and return a compliance memorandum.",
+			href: "/oracles/patent",
 		},
 		{
 			roman: "III",
@@ -25,6 +26,7 @@
 			title: "Project Tour Guide",
 			teaser:
 				"A guide who walks the halls of the works, retrieving records as you ask — every tool call shown on the wire.",
+			href: "/oracles",
 		},
 		{
 			roman: "IV",
@@ -32,6 +34,7 @@
 			title: "Clause Explainer",
 			teaser:
 				"Paste a clause; receive plain English, enumerated obligations, and flagged risks.",
+			href: "/oracles",
 		},
 	];
 
@@ -278,7 +281,7 @@
 		<div class="grid grid-cols-12 gap-x-6 gap-y-12">
 			<!-- Featured Oracle I -->
 			<a
-				href="/oracles"
+				href="/oracles/concierge"
 				class="featured-oracle col-span-12 md:col-span-7 group"
 			>
 				<div class="featured-roman">I</div>
@@ -305,7 +308,7 @@
 							<span class="hairline-soft mb-7" aria-hidden="true"
 							></span>
 						{/if}
-						<a href="/oracles" class="oracle-list-link group">
+						<a href={oracle.href} class="oracle-list-link group">
 							<div class="flex items-baseline gap-4">
 								<span class="oracle-roman">{oracle.roman}</span>
 								<span class="eyebrow"

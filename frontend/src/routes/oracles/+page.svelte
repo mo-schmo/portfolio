@@ -28,7 +28,8 @@
 				"FastAPI",
 				"SSE streaming",
 			],
-			status: "in-chambers",
+			status: "ready",
+			href: "/oracles/concierge",
 		},
 		{
 			number: "II",
@@ -47,7 +48,8 @@
 				"OpenRouter",
 				"SSE state events",
 			],
-			status: "in-chambers",
+			status: "ready",
+			href: "/oracles/patent",
 		},
 		{
 			number: "III",
@@ -118,8 +120,13 @@
 	<section class="mb-24">
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
 			{#each oracles as oracle}
-				<article
-					class="legal-folio bg-white/60 p-10 md:p-12 group oracle-illumination flex flex-col"
+				<svelte:element
+					this={oracle.status === "ready" && oracle.href
+						? "a"
+						: "article"}
+					href={oracle.status === "ready" ? oracle.href : undefined}
+					class="legal-folio bg-white/60 p-10 md:p-12 group oracle-illumination ink-bloom flex flex-col"
+					class:cursor-pointer={oracle.status === "ready"}
 				>
 					<header
 						class="flex items-baseline justify-between gap-4 mb-6 pb-6 border-b border-paper-line"
@@ -181,7 +188,19 @@
 							{/each}
 						</div>
 					</div>
-				</article>
+
+					{#if oracle.status === "ready"}
+						<div
+							class="mt-6 pt-4 border-t border-paper-line text-right"
+						>
+							<span
+								class="text-xs font-display tracking-widest uppercase text-mahogany group-hover:text-brass transition-colors"
+							>
+								Enter Session &rarr;
+							</span>
+						</div>
+					{/if}
+				</svelte:element>
 			{/each}
 		</div>
 	</section>

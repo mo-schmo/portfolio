@@ -22,7 +22,7 @@ class Settings(BaseSettings):
         default="openai/gpt-4o-mini", alias="OPENROUTER_MODEL_FAST"
     )
     openrouter_model_smart: str = Field(
-        default="anthropic/claude-3.5-sonnet", alias="OPENROUTER_MODEL_SMART"
+        default="anthropic/claude-sonnet-4.5", alias="OPENROUTER_MODEL_SMART"
     )
     openrouter_referer: str = Field(
         default="http://localhost:5173", alias="OPENROUTER_REFERER"

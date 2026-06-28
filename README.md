@@ -149,7 +149,7 @@ Health check: <http://localhost:8001/health>. See [agents/README.md](agents/READ
 
 - `OPENROUTER_API_KEY` - OpenRouter API key (required)
 - `OPENROUTER_MODEL_FAST` - Fast model id (default: `openai/gpt-4o-mini`)
-- `OPENROUTER_MODEL_SMART` - Smart model id (default: `anthropic/claude-3.5-sonnet`)
+- `OPENROUTER_MODEL_SMART` - Smart model id (default: `anthropic/claude-sonnet-4.5`)
 - `BACKEND_URL` - Where to reach the Go backend (default: `http://localhost:8080`)
 - `ALLOWED_ORIGINS` - Comma-separated CORS origins
 - `RATE_LIMIT_PER_MINUTE` - Per-IP rate limit (default: 20)

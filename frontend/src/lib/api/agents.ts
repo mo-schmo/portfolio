@@ -75,7 +75,9 @@ export async function* streamSSE(opts: StreamOptions): AsyncGenerator<StreamEven
 		while (true) {
 			const { value, done } = await reader.read();
 			if (done) break;
-			buffer += decoder.decode(value, { stream: true });
+			// Normalise CRLF to LF so the SSE framing logic only deals with one
+			// line-ending style. The SSE spec allows CRLF, LF, or CR.
+			buffer += decoder.decode(value, { stream: true }).replace(/\r\n?/g, '\n');
 
 			let sep = buffer.indexOf('\n\n');
 			while (sep !== -1) {
@@ -92,11 +94,10 @@ export async function* streamSSE(opts: StreamOptions): AsyncGenerator<StreamEven
 }
 
 function parseSSEEvent(raw: string): StreamEvent | null {
-	const lines = raw.split('\n');
 	const dataLines: string[] = [];
-	for (const line of lines) {
+	for (const line of raw.split('\n')) {
 		if (line.startsWith('data:')) {
-			dataLines.push(line.slice(5).trimStart());
+			dataLines.push(line.slice(5).replace(/^ /, ''));
 		}
 	}
 	if (dataLines.length === 0) return null;
