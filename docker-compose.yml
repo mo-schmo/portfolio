@@ -9,9 +9,34 @@ services:
     environment:
       - PORT=8080
       - DB_PATH=/data/portfolio.db
+      - RESUME_PATH=/root/data/resume.json
     volumes:
       - backend-data:/data
     restart: unless-stopped
 
+  agents:
+    build:
+      context: ./agents
+      dockerfile: Dockerfile
+    container_name: portfolio-agents
+    ports:
+      - "8001:8001"
+    # OPENROUTER_* and other secrets live in agents/.env.local (gitignored,
+    # also excluded from the image via .dockerignore). Sourcing it here is what
+    # gets the API key into the running container.
+    env_file:
+      - ./agents/.env.local
+    # These must differ from the values in .env.local (which target host-local
+    # dev), so override them after env_file is applied.
+    environment:
+      - PORT=8001
+      - BACKEND_URL=http://backend:8080
+    volumes:
+      - agents-cache:/cache
+    depends_on:
+      - backend
+    restart: unless-stopped
+
 volumes:
   backend-data:
+  agents-cache:

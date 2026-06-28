@@ -48,6 +48,7 @@ func main() {
 	// Initialize handlers
 	blogHandler := api.NewBlogHandler(blogService, wsHub)
 	projectHandler := api.NewProjectHandler(projectService, wsHub)
+	resumeHandler := api.NewResumeHandler()
 
 	// Setup router
 	r := mux.NewRouter()
@@ -88,6 +89,9 @@ func main() {
 	apiRouter.Handle("/projects", middleware.Auth(http.HandlerFunc(projectHandler.Create))).Methods("POST")
 	apiRouter.Handle("/projects/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(projectHandler.Update))).Methods("PUT")
 	apiRouter.Handle("/projects/{id:[0-9]+}", middleware.Auth(http.HandlerFunc(projectHandler.Delete))).Methods("DELETE")
+
+	// Resume (public, served from disk for agent grounding)
+	apiRouter.HandleFunc("/resume", resumeHandler.Get).Methods("GET")
 
 	// WebSocket route
 	r.HandleFunc("/ws", wsHub.HandleWebSocket)

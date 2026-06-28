@@ -1,6 +1,6 @@
-# Legacy Folio: Software Engineering Portfolio
+# Hamza & Co. - Software Engineering Portfolio
 
-A prestigious, classical-styled portfolio website inspired by traditional legal archives and academic aesthetics. Built with a SvelteKit frontend and Golang backend, it showcases professional engineering expertise through a refined, legacy-themed interface.
+A prestigious, classical-styled portfolio website inspired by traditional legal archives and academic aesthetics. Built with a SvelteKit frontend, a Golang backend, and a Python FastAPI sidecar that hosts a series of agentic bots ("The Oracles") to showcase applied AI engineering.
 
 ## Tech Stack
 
@@ -9,13 +9,22 @@ A prestigious, classical-styled portfolio website inspired by traditional legal 
 - **TailwindCSS** - Custom design system for the Legacy Folio aesthetic
 - **TypeScript** - Type-safe development
 - **Classical Design** - Mahogany, Parchment, and Brass color palette with elegant serif typography
+- **Motion** - Subtle page-enter, ink-bloom hover, brass nav underlines, and typewriter cursor for streamed agent output (all respecting `prefers-reduced-motion`)
 
-### Backend
+### Backend (Go)
 - **Golang** - High-performance backend API
 - **SQLite** - Database (easily switchable to PostgreSQL)
 - **Gorilla WebSocket** - Real-time WebSocket support
 - **Gorilla Mux** - HTTP router
 - **Clean Architecture** - Separation of concerns with domain, repository, service, and API layers
+
+### Agents (Python)
+- **FastAPI + uvicorn** - HTTP service for the agentic bots
+- **OpenRouter** - Provider-agnostic LLM gateway (OpenAI-compatible)
+- **sentence-transformers** - Local embeddings for the Concierge RAG index
+- **LangGraph** - Multi-agent orchestration for the Patent Compliance Bench
+- **Pydantic** - Structured-output schemas
+- **SSE (sse-starlette)** - Streaming tokens, tool calls, and agent state to the browser
 
 ## Features
 
@@ -23,33 +32,52 @@ A prestigious, classical-styled portfolio website inspired by traditional legal 
 - **Archival Gallery** - Dynamic project showcase with a refined, tactile presentation
 - **Legacy Blog** - A sophisticated journal system for technical thoughts and updates
 - **Resume Portfolio** - Elegant display of experience, education, and skills using classical layout principles
+- **The Oracles** - A `/oracles` chamber that introduces four agentic bots demonstrating retrieval, multi-agent deliberation, tool use, and structured output (UI scaffolded; bot logic in progress)
 - **Real-time Notifications** - WebSocket integration for live system updates
-- **Tactile UI** - Paper textures, ink-stamped elements, and smooth classical transitions
+- **Tactile UI** - Paper textures, ink-stamped elements, illuminated brass accents, and smooth classical transitions
 - **Responsive Terminal** - Fully responsive dashboard for mobile and desktop management
 
 ## Project Structure
 
 ```
 portfolio/
-├── frontend/                 # SvelteKit application
+├── frontend/                       # SvelteKit application
 │   ├── src/
 │   │   ├── lib/
-│   │   │   ├── components/   # Reusable UI components
-│   │   │   ├── stores/       # Auth and data stores
-│   │   ├── routes/           # SvelteKit routes
-│   │   │   ├── admin/        # Admin CMS routes (Login, Dashboard, Editors)
-│   │   └── app.css          # Cyberpunk theme styles
+│   │   │   ├── api/                # Backend + agents API clients
+│   │   │   ├── components/         # Reusable UI components
+│   │   │   │   └── oracle/         # OracleChat + ToolCallTrace (agent UI)
+│   │   │   ├── content/resume.ts   # Typed resume (single source of truth)
+│   │   │   └── stores/             # Auth, websocket, mock data
+│   │   ├── routes/                 # SvelteKit routes
+│   │   │   ├── admin/              # Admin CMS routes
+│   │   │   └── oracles/            # The Oracles chamber
+│   │   └── app.css                 # Legacy Folio theme + Oracle utilities
 │   └── package.json
-├── backend/                  # Golang API
-│   ├── cmd/server/          # Application entry point
+├── backend/                        # Golang API
+│   ├── cmd/server/                 # Application entry point
+│   ├── data/resume.json            # Resume served to the agents sidecar
 │   ├── internal/
-│   │   ├── api/             # HTTP handlers
-│   │   ├── domain/          # Domain models
-│   │   ├── repository/      # Data access layer
-│   │   ├── service/         # Business logic
-│   │   ├── middleware/      # Auth, CORS, and logging middleware
-│   │   └── db/              # Database migrations
-│   └── pkg/websocket/       # WebSocket implementation
+│   │   ├── api/                    # HTTP handlers (includes /api/resume)
+│   │   ├── domain/                 # Domain models
+│   │   ├── repository/             # Data access layer
+│   │   ├── service/                # Business logic
+│   │   ├── middleware/             # Auth, CORS, and logging middleware
+│   │   └── db/                     # Database migrations
+│   └── pkg/websocket/              # WebSocket implementation
+├── agents/                         # Python FastAPI sidecar (The Oracles)
+│   ├── app/
+│   │   ├── main.py                 # FastAPI app, CORS, rate limiting
+│   │   ├── llm.py                  # OpenRouter client + streaming helpers
+│   │   ├── sessions.py             # In-memory session store
+│   │   ├── sse.py                  # SSE event helpers
+│   │   ├── rate_limit.py           # Per-IP sliding-window limiter
+│   │   ├── settings.py             # Typed env-driven settings
+│   │   └── routes/                 # Per-Oracle routers
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── .env.example
+├── docker-compose.yml              # backend + agents
 └── README.md
 ```
 
@@ -59,6 +87,7 @@ portfolio/
 
 - Node.js 18+ (for frontend)
 - Go 1.21+ (for backend)
+- Python 3.11+ (for the `agents/` sidecar; optional unless you're running the Oracles)
 
 ### Frontend Setup
 
@@ -93,13 +122,48 @@ go run cmd/server/main.go
 
 The backend API will be available at `http://localhost:8080` by default.
 
+### Agents Sidecar Setup
+
+```bash
+cd agents
+python -m venv .venv
+.venv\Scripts\Activate.ps1            # PowerShell on Windows
+# source .venv/bin/activate            # macOS / Linux
+pip install -r requirements.txt
+cp .env.example .env                   # then edit and set OPENROUTER_API_KEY
+uvicorn app.main:app --reload --port 8001
+```
+
+Health check: <http://localhost:8001/health>. See [agents/README.md](agents/README.md) for route details.
+
 ### Environment Variables (Backend)
 
 - `PORT` - Server port (default: 8080)
 - `DB_PATH` - Database file path (default: portfolio.db)
+- `RESUME_PATH` - Path to `resume.json` (default: `data/resume.json`)
 - `ADMIN_USERNAME` - Admin login username (default: admin)
 - `ADMIN_PASSWORD` - Admin login password (default: password)
 - `JWT_SECRET` - Secret key for JWT signing
+
+### Environment Variables (Frontend)
+
+Vite-style `PUBLIC_*` variables, set at build time (e.g. in Vercel project settings, in `frontend/.env.local`, or via your CI). Defaults are safe for local dev when omitted.
+
+- `PUBLIC_API_URL` - Go backend base URL (e.g. `https://your-app.northflank.app/api`)
+- `PUBLIC_WS_URL` - Go backend WebSocket URL (e.g. `wss://your-app.northflank.app/ws`)
+- `PUBLIC_AGENTS_URL` - Agents sidecar base URL (e.g. `https://your-agents.northflank.app`); defaults to `http://localhost:8001`.
+- `PUBLIC_ORACLES_ENABLED` - Feature flag for the Oracles section. Set to `false` to hide the Oracles nav entry, the home Counsel Chamber section, the "Ask the Tour Guide" button, and to 404 the `/oracles/*` routes - useful when deploying the frontend without the agents sidecar. Defaults to enabled.
+
+### Environment Variables (Agents)
+
+- `OPENROUTER_API_KEY` - OpenRouter API key (required)
+- `OPENROUTER_MODEL_FAST` - Fast model id (default: `openai/gpt-4o-mini`)
+- `OPENROUTER_MODEL_SMART` - Smart model id (default: `anthropic/claude-sonnet-4.5`)
+- `BACKEND_URL` - Where to reach the Go backend (default: `http://localhost:8080`)
+- `ALLOWED_ORIGINS` - Comma-separated CORS origins
+- `RATE_LIMIT_PER_MINUTE` - Per-IP rate limit (default: 20)
+- `SESSION_TTL_SECONDS` - Idle session TTL (default: 3600)
+- `EMBEDDING_MODEL` - sentence-transformers model id (default: `BAAI/bge-small-en-v1.5`)
 
 ## API Endpoints
 
@@ -124,11 +188,24 @@ The backend API will be available at `http://localhost:8080` by default.
 - `PUT /api/projects/{id}` - Update project (Protected)
 - `DELETE /api/projects/{id}` - Delete project (Protected)
 
+### Resume
+- `GET /api/resume` - Canonical resume JSON (used by both frontend and the agents sidecar)
+
 ### WebSocket
 - `WS /ws` - WebSocket endpoint for real-time updates
 
 ### Health Check
 - `GET /health` - Server health check
+
+## Agents (Oracles) Endpoints
+
+Hosted by the Python sidecar at port 8001. UI scaffolded; full bot implementations are landing next.
+
+- `POST /agents/concierge/chat` - SSE stream, RAG over the portfolio
+- `POST /agents/patent/run` - SSE stream, multi-agent compliance bench
+- `POST /agents/tour/chat` - SSE stream, tool-using project tour guide
+- `POST /agents/clause/explain` - JSON, structured clause explanation
+- `GET /health` - Service health check
 
 ## Design Elements
 
@@ -151,6 +228,17 @@ The backend demonstrates:
 - Middleware pattern (CORS, logging, and JWT/Session authentication)
 - Error handling best practices
 - Structured logging
+
+## AI / Agentic Skills Showcased
+
+The agents sidecar will demonstrate (UI is in place, bot logic is the next milestone):
+
+- Streaming token + tool-call SSE protocols designed for live agent UIs
+- Provider-agnostic LLM access via OpenRouter (OpenAI-compatible)
+- Local sentence-transformers embeddings paired with grounded generation
+- LangGraph multi-agent orchestration with critique loops
+- Pydantic-validated structured outputs for downstream UI rendering
+- Per-IP rate limiting, typed settings, and in-memory session management
 
 ## Development
 

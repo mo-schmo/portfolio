@@ -25,8 +25,9 @@ RUN apk --no-cache add ca-certificates sqlite
 
 WORKDIR /root/
 
-# Copy the binary from builder
+# Copy the binary and bundled data from builder
 COPY --from=builder /app/server .
+COPY --from=builder /app/data ./data
 
 # Expose port
 EXPOSE 8080
