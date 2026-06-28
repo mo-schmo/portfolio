@@ -11,6 +11,9 @@
 	onMount(() => {
 		initWebSocket();
 
+		// Flag <html> so progressive reveal styles (.rule-reveal) activate.
+		document.documentElement.classList.add("js-reveal");
+
 		// Mouse tracking for the ink-bloom hover effect on cards.
 		// Cheap: only fires on mousemove inside elements that opt in.
 		const handler = (e: MouseEvent) => {
