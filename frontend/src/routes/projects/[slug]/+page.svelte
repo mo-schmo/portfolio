@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+    import { ORACLES_ENABLED } from "$lib/config/features";
 
     export let data;
     $: project = data.project;
@@ -135,11 +136,13 @@
                 </button>
 
                 <div class="flex gap-10 items-center">
-                    <a
-                        href={`/oracles/tour?project=${project.slug}`}
-                        class="text-brass hover:text-mahogany transition-colors text-[10px] font-display font-bold uppercase tracking-[0.2em] border border-brass/40 hover:border-mahogany px-4 py-2"
-                        >Ask the Tour Guide</a
-                    >
+                    {#if ORACLES_ENABLED}
+                        <a
+                            href={`/oracles/tour?project=${project.slug}`}
+                            class="text-brass hover:text-mahogany transition-colors text-[10px] font-display font-bold uppercase tracking-[0.2em] border border-brass/40 hover:border-mahogany px-4 py-2"
+                            >Ask the Tour Guide</a
+                        >
+                    {/if}
                     {#if project.githubUrl}
                         <a
                             href={project.githubUrl}

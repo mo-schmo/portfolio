@@ -145,6 +145,15 @@ Health check: <http://localhost:8001/health>. See [agents/README.md](agents/READ
 - `ADMIN_PASSWORD` - Admin login password (default: password)
 - `JWT_SECRET` - Secret key for JWT signing
 
+### Environment Variables (Frontend)
+
+Vite-style `PUBLIC_*` variables, set at build time (e.g. in Vercel project settings, in `frontend/.env.local`, or via your CI). Defaults are safe for local dev when omitted.
+
+- `PUBLIC_API_URL` - Go backend base URL (e.g. `https://your-app.northflank.app/api`)
+- `PUBLIC_WS_URL` - Go backend WebSocket URL (e.g. `wss://your-app.northflank.app/ws`)
+- `PUBLIC_AGENTS_URL` - Agents sidecar base URL (e.g. `https://your-agents.northflank.app`); defaults to `http://localhost:8001`.
+- `PUBLIC_ORACLES_ENABLED` - Feature flag for the Oracles section. Set to `false` to hide the Oracles nav entry, the home Counsel Chamber section, the "Ask the Tour Guide" button, and to 404 the `/oracles/*` routes - useful when deploying the frontend without the agents sidecar. Defaults to enabled.
+
 ### Environment Variables (Agents)
 
 - `OPENROUTER_API_KEY` - OpenRouter API key (required)

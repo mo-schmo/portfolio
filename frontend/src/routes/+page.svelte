@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { resume } from "$lib/content/resume";
+	import { ORACLES_ENABLED } from "$lib/config/features";
 
 	const { experience, skills, education, statement, name, title, tagline } =
 		resume;
@@ -110,10 +111,14 @@
 						<span>Read the Folio</span>
 						<span class="cta-arrow" aria-hidden="true">&rarr;</span>
 					</a>
-					<a href="/oracles" class="cta-link cta-link--accent">
-						<span>Consult the Oracles</span>
-						<span class="cta-arrow" aria-hidden="true">&#8599;</span>
-					</a>
+					{#if ORACLES_ENABLED}
+						<a href="/oracles" class="cta-link cta-link--accent">
+							<span>Consult the Oracles</span>
+							<span class="cta-arrow" aria-hidden="true"
+								>&#8599;</span
+							>
+						</a>
+					{/if}
 				</nav>
 			</header>
 
@@ -264,8 +269,9 @@
 	</section>
 
 	<!-- ============================================================
-		 CHAMBERS OF COUNSEL — Oracle preview
+		 CHAMBERS OF COUNSEL — Oracle preview (feature-flagged)
 		 ============================================================ -->
+	{#if ORACLES_ENABLED}
 	<section class="mb-24 md:mb-28">
 		<header class="section-head mb-12">
 			<div class="eyebrow">Chambers of Counsel</div>
@@ -328,6 +334,7 @@
 			</ul>
 		</div>
 	</section>
+	{/if}
 
 	<span class="hairline mb-20" aria-hidden="true"></span>
 </article>

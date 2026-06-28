@@ -1,6 +1,7 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { auth, checkAuth } from "$lib/stores/auth";
+    import { ORACLES_ENABLED } from "$lib/config/features";
     import { slide } from "svelte/transition";
     import { onMount } from "svelte";
 
@@ -25,17 +26,19 @@
         };
     });
 
-    const navItems = [
+    const baseNavItems = [
         { href: "/", label: "Home" },
         { href: "/projects", label: "Projects" },
-        { href: "/oracles", label: "Oracles" },
+        ...(ORACLES_ENABLED
+            ? [{ href: "/oracles", label: "Oracles" }]
+            : []),
         { href: "/blog", label: "Blog" },
         { href: "/contact", label: "Contact" },
     ];
 
     $: allNavItems = $auth.isAuthenticated
-        ? [...navItems, { href: "/admin", label: "Admin" }]
-        : navItems;
+        ? [...baseNavItems, { href: "/admin", label: "Admin" }]
+        : baseNavItems;
 
     let isMobileMenuOpen = false;
 
