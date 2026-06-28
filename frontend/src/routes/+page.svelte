@@ -26,7 +26,7 @@
 			title: "Project Tour Guide",
 			teaser:
 				"A guide who walks the halls of the works, retrieving records as you ask — every tool call shown on the wire.",
-			href: "/oracles",
+			href: "/oracles/tour",
 		},
 		{
 			roman: "IV",
@@ -34,7 +34,7 @@
 			title: "Clause Explainer",
 			teaser:
 				"Paste a clause; receive plain English, enumerated obligations, and flagged risks.",
-			href: "/oracles",
+			href: "/oracles/clause",
 		},
 	];
 

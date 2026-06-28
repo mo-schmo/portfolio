@@ -63,7 +63,8 @@
 				"Per-project context, anchored to a specific exhibit",
 			],
 			stack: ["OpenRouter tool-use", "Go backend tools", "FastAPI"],
-			status: "in-chambers",
+			status: "ready",
+			href: "/oracles/tour",
 		},
 		{
 			number: "IV",
@@ -77,7 +78,8 @@
 				"Suggested redlines with reasoning preserved",
 			],
 			stack: ["JSON mode", "Pydantic schema", "FastAPI"],
-			status: "in-chambers",
+			status: "ready",
+			href: "/oracles/clause",
 		},
 	];
 </script>
@@ -218,13 +220,14 @@
 			<h2
 				class="text-3xl font-display font-black text-mahogany uppercase tracking-tight mb-4"
 			>
-				Chambers Are Being Prepared
+				All Four Counsels in Session
 			</h2>
 			<p class="font-serif text-lg text-ink/85 italic leading-relaxed">
-				The oracles are presently in deliberation. The architecture is
-				in place - a Python FastAPI sidecar wired to OpenRouter, a
-				typed streaming client, and the Counsel aesthetic to greet you
-				when each opens session. Please check back shortly.
+				Each oracle is open for inquiry - retrieval, deliberation,
+				instrumentation, and structured judgment. They are
+				demonstrations, served by a Python FastAPI sidecar wired to
+				OpenRouter; visitor sessions are kept in memory only and no
+				confidential material should be submitted.
 			</p>
 			<div class="mt-8 flex justify-center gap-6">
 				<a href="/projects" class="btn-outline-legal"

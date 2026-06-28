@@ -13,11 +13,12 @@ This module exposes:
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from typing import Any, AsyncIterator, Type, TypeVar
 
 from openai import AsyncOpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from .settings import get_settings
 
@@ -139,6 +140,70 @@ async def stream_chat(
             yield StreamEvent(kind="finish", finish_reason=choice.finish_reason)
 
 
+# Matches ```json\n...\n``` or ```\n...\n``` fences, capturing the inner body.
+_FENCE_RE = re.compile(
+    r"```(?:json|JSON)?\s*\n?(?P<body>.*?)\n?```",
+    re.DOTALL,
+)
+
+
+def _extract_json_payload(content: str) -> str:
+    """Pull a JSON object/array out of a model response.
+
+    OpenRouter passes ``response_format={"type": "json_object"}`` through to
+    Anthropic as a hint, not a hard constraint, so Claude frequently wraps
+    output in ```` ```json ```` fences or precedes it with prose. We try three
+    strategies, in order, before giving up and letting validation raise on
+    the raw content (which yields the most informative error).
+
+    1. Strip a single fenced code block if the whole response is one.
+    2. Otherwise, slice from the first ``{`` (or ``[``) to the matching last
+       brace/bracket. This tolerates leading or trailing commentary.
+    3. Fall back to the original content unchanged.
+    """
+    text = content.strip()
+    if not text:
+        return text
+
+    fence_match = _FENCE_RE.search(text)
+    if fence_match:
+        candidate = fence_match.group("body").strip()
+        if candidate:
+            return candidate
+
+    first_obj = text.find("{")
+    first_arr = text.find("[")
+    starts = [i for i in (first_obj, first_arr) if i != -1]
+    if starts:
+        start = min(starts)
+        opener = text[start]
+        closer = "}" if opener == "{" else "]"
+        end = text.rfind(closer)
+        if end > start:
+            return text[start : end + 1]
+
+    return text
+
+
+def _schema_instruction(schema: Type[BaseModel]) -> str:
+    """Render an explicit instruction telling the model the exact field names.
+
+    Prose descriptions in system prompts are not enough: models invent
+    plausible-but-wrong keys (e.g. ``section``/``issue`` instead of the
+    schema's ``location``/``description``). We hand the model the actual JSON
+    Schema, with required keys called out, so the output matches the pydantic
+    contract verbatim.
+    """
+    json_schema = json.dumps(schema.model_json_schema(), indent=2)
+    return (
+        "Your response MUST be a single JSON object that strictly conforms to "
+        "the following JSON Schema. Use these exact field names and types; do "
+        "not add, rename, or omit required fields. Do not wrap the JSON in "
+        "code fences or add commentary.\n\n"
+        f"JSON Schema:\n{json_schema}"
+    )
+
+
 async def complete_json(
     model: str,
     messages: list[dict[str, Any]],
@@ -148,16 +213,39 @@ async def complete_json(
 ) -> T:
     """Single-shot completion that returns a parsed pydantic model.
 
-    Uses OpenRouter's JSON-mode via ``response_format={"type": "json_object"}``.
-    The caller's system prompt is responsible for describing the schema.
+    Uses OpenRouter's JSON-mode via ``response_format={"type": "json_object"}``
+    and additionally injects the schema's JSON Schema into the prompt so the
+    model uses the exact field names (JSON mode alone does not constrain keys).
+
+    Responses are passed through ``_extract_json_payload`` before validation
+    because some upstream providers (notably Anthropic via OpenRouter) treat
+    JSON mode as advisory and may return fenced code blocks or trailing
+    commentary.
     """
 
     client = get_client()
+    augmented_messages = [
+        *messages,
+        {"role": "system", "content": _schema_instruction(schema)},
+    ]
     response = await client.chat.completions.create(
         model=model,
-        messages=messages,
+        messages=augmented_messages,
         temperature=temperature,
         response_format={"type": "json_object"},
     )
-    content = response.choices[0].message.content or "{}"
-    return schema.model_validate_json(content)
+    raw = response.choices[0].message.content or "{}"
+    payload = _extract_json_payload(raw)
+    try:
+        return schema.model_validate_json(payload)
+    except ValidationError:
+        # Last-resort: try parsing then validating, which gives pydantic a
+        # chance to coerce types that ``model_validate_json`` is stricter about.
+        try:
+            data = json.loads(payload)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"Model returned non-JSON content (model={model}). "
+                f"First 200 chars: {raw[:200]!r}"
+            ) from exc
+        return schema.model_validate(data)

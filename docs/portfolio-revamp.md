@@ -5,14 +5,15 @@ portfolio and add four agentic bots ("The Oracles") that showcase applied
 AI engineering.
 
 - **Branch:** `feat/portfolio-revamp-oracles`
-- **Status:** Phase 0, 1, and 3 complete. Phase 2 (Tour Guide + Clause
-  Explainer) is the next milestone.
+- **Status:** All phases (0-3) complete. The four Oracles are in session:
+  Concierge, Patent Bench, Tour Guide, and Clause Explainer.
 - **Commit history on this branch:**
   - `2a1ae70` &mdash; *Revamp portfolio UI and scaffold Oracles agentic bots* (Phase 0 + Phase 3)
   - `9449a07` &mdash; *Add docs for revamp* (first version of this document)
   - `0cef75c` &mdash; *Modernize home into refined editorial broadsheet*
   - `81b7b88` &mdash; *Merge feat/home-editorial-modernize: refined editorial home revamp*
   - upcoming &mdash; Phase 1 implementation (Concierge + Patent Bench)
+  - upcoming &mdash; Phase 2 implementation (Tour Guide + Clause Explainer)
 
 ---
 
@@ -56,8 +57,8 @@ portfolio/
 | --- | -------------------------- | ------------------------- | ---------- | ----------------------------------------------------- |
 | I   | Portfolio Concierge        | Retrieval-Augmented       | In Session | sentence-transformers RAG over resume/projects/blog   |
 | II  | Patent Compliance Bench    | Multi-agent (LangGraph)   | In Session | Drafter -> Reviewer -> Revisor with critique loop     |
-| III | Project Tour Guide         | Tool-using agent          | In Chambers| OpenRouter tool-calling against the Go backend        |
-| IV  | Clause Explainer           | Structured JSON output    | In Chambers| Pydantic-validated single-shot generation             |
+| III | Project Tour Guide         | Tool-using agent          | In Session | OpenRouter tool-calling against the Go backend        |
+| IV  | Clause Explainer           | Structured JSON output    | In Session | Pydantic-validated single-shot generation             |
 
 Visitor sessions are in-memory only (no login, no DB persistence). Each bot
 page includes sample prompts or sample inputs; the Patent bot shows a
@@ -91,13 +92,13 @@ privacy banner: do not paste real confidential drafts.
   `ComplianceReport` pydantic model, `POST /agents/patent/run` SSE endpoint,
   three-panel UI with timeline + memorandum + sample drafts + disclaimer.
 
-### Phase 2 &mdash; Remaining two bots (NEXT)
+### Phase 2 &mdash; Remaining two bots (DONE)
 
-- [ ] **phase2_tour_guide** &mdash; Project Tour Guide: tool-using agent
+- [x] **phase2_tour_guide** &mdash; Project Tour Guide: tool-using agent
   with `get_project` + `list_related_blog` tools,
   `POST /agents/tour/chat` endpoint, "Ask the Tour Guide" button on
   project detail pages.
-- [ ] **phase2_clause_explainer** &mdash; Legal Clause Explainer:
+- [x] **phase2_clause_explainer** &mdash; Legal Clause Explainer:
   `POST /agents/clause/explain` single-shot structured output,
   `ClauseExplanation` pydantic, two-pane "Memorandum of Counsel" UI.
 
@@ -125,6 +126,8 @@ masthead, dropcap statement, hairline rules, and a featured Oracle I card.
 - [frontend/src/routes/oracles/+page.svelte](../frontend/src/routes/oracles/+page.svelte) &mdash; The Oracles chamber landing page, with per-card status ("In Session" vs "In Chambers") and deep links.
 - [frontend/src/routes/oracles/concierge/+page.svelte](../frontend/src/routes/oracles/concierge/+page.svelte) &mdash; Concierge chat page with method sidebar and suggested prompts.
 - [frontend/src/routes/oracles/patent/+page.svelte](../frontend/src/routes/oracles/patent/+page.svelte) &mdash; Patent bench three-panel UI (Exhibit A / Proceedings / Memorandum) with three pre-loaded sample drafts and a disclaimer banner.
+- [frontend/src/routes/oracles/tour/+page.svelte](../frontend/src/routes/oracles/tour/+page.svelte) &mdash; Tour Guide chat page (method sidebar + suggested prompts). Reads an optional `?project=<slug>` query param and anchors the session to that exhibit. An "Ask the Tour Guide" button on [projects/[slug]/+page.svelte](../frontend/src/routes/projects/[slug]/+page.svelte) deep-links here.
+- [frontend/src/routes/oracles/clause/+page.svelte](../frontend/src/routes/oracles/clause/+page.svelte) &mdash; Clause Explainer two-pane "Memorandum of Counsel" UI with sample clauses, summary / plain English / obligations / risks / suggested redlines, and a disclaimer banner.
 - [frontend/src/routes/+page.svelte](../frontend/src/routes/+page.svelte) &mdash; Editorial home page (masthead, Articles I-IV, Counsel Chamber with featured Oracle I).
 - [frontend/src/lib/components/Navbar.svelte](../frontend/src/lib/components/Navbar.svelte) &mdash; "Oracles" nav entry.
 - [frontend/src/app.css](../frontend/src/app.css) &mdash; oracle utilities (`btn-illuminated`, `oracle-illumination`, `ink-bloom`, `typewriter-cursor`, `telegraph-wire`, `page-enter`) + brass nav underline animation + `prefers-reduced-motion` guard.
@@ -149,7 +152,10 @@ masthead, dropcap statement, hairline rules, and a featured Oracle I card.
 - [agents/app/schemas/patent.py](../agents/app/schemas/patent.py) &mdash; `PatentSections`, `Finding`, `ComplianceReport`, `RevisionResult` pydantic models.
 - [agents/app/graphs/patent.py](../agents/app/graphs/patent.py) &mdash; LangGraph workflow (`drafter -> reviewer -> conditional(any HIGH and iter<1) -> revisor -> reviewer -> END`) with per-node summary helpers.
 - [agents/app/routes/patent.py](../agents/app/routes/patent.py) &mdash; `POST /agents/patent/run` SSE endpoint that streams `state` events on each node transition and a final `report` event with the structured payload.
-- [agents/app/routes/tour.py](../agents/app/routes/tour.py), [agents/app/routes/clause.py](../agents/app/routes/clause.py) &mdash; status stubs awaiting Phase 2 implementation.
+- [agents/app/tools/registry.py](../agents/app/tools/registry.py) &mdash; read-only tool registry for the Tour Guide (`get_project`, `list_related_blog`), with OpenRouter tool specs and an async `dispatch` that returns a `(result, summary)` tuple per call.
+- [agents/app/routes/tour.py](../agents/app/routes/tour.py) &mdash; `POST /agents/tour/chat` SSE endpoint running a bounded OpenRouter tool-calling loop; streams `token`, `tool_call`, and `tool_result` events. Accepts an optional `project_slug` to anchor the conversation to one exhibit.
+- [agents/app/schemas/clause.py](../agents/app/schemas/clause.py) &mdash; `ClauseExplanation` (+ `Obligation`, `Risk`, `Redline`) pydantic models mirroring the TS interface in `agents.ts`.
+- [agents/app/routes/clause.py](../agents/app/routes/clause.py) &mdash; `POST /agents/clause/explain` single-shot `complete_json` against the smart model returning a validated `ClauseExplanation`.
 - [agents/Dockerfile](../agents/Dockerfile) &mdash; pre-downloads the sentence-transformers embedding model at build time.
 - [docker-compose.yml](../docker-compose.yml) &mdash; `agents` service sources secrets from `agents/.env.local` (gitignored) and overrides container-specific env (`BACKEND_URL`, `PORT`).
 
@@ -163,7 +169,10 @@ masthead, dropcap statement, hairline rules, and a featured Oracle I card.
 
 - `cd frontend && npm run check` &mdash; 0 errors.
 - `cd frontend && npm run build` &mdash; production build succeeded.
-- Agents OpenAPI introspection lists all five endpoints (`POST /agents/concierge/chat`, `POST /agents/patent/run`, and four `*/status` routes).
+- Agents OpenAPI introspection lists all eight `/agents/*` endpoints:
+  `POST /agents/concierge/chat`, `POST /agents/patent/run`,
+  `POST /agents/tour/chat`, `POST /agents/clause/explain`, and four
+  `*/status` routes.
 - `from app.graphs.patent import get_graph` compiles the LangGraph cleanly with nodes `__start__`, `drafter`, `reviewer`, `revisor`, `__end__`.
 - `ReadLints` across modified Go/TS/Python files &mdash; clean.
 
@@ -196,10 +205,10 @@ docker-compose up --build
 
 ---
 
-## How to finish Phase 2
+## How Phase 2 was completed
 
-The Phase 1 work established conventions the remaining bots can reuse
-verbatim:
+Phase 2 reused the Phase 1 conventions verbatim. For reference, the approach
+taken (now implemented) was:
 
 1. **Tour Guide** &mdash; create `agents/app/tools/registry.py` with:
    - `get_project(slug)` &rarr; `GET {BACKEND_URL}/api/projects/slug/{slug}`
