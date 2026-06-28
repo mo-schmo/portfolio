@@ -11,6 +11,7 @@
     const navItems = [
         { href: "/", label: "Home" },
         { href: "/projects", label: "Projects" },
+        { href: "/oracles", label: "Oracles" },
         { href: "/blog", label: "Blog" },
         { href: "/contact", label: "Contact" },
     ];
@@ -44,8 +45,8 @@
                 HAMZA & CO.
             </a>
 
-            <div class="hidden md:flex items-center space-x-12">
-                <ul class="flex space-x-12">
+            <div class="hidden md:flex items-center space-x-10">
+                <ul class="flex space-x-10">
                     {#each allNavItems as item}
                         <li>
                             <a

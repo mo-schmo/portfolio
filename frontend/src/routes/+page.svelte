@@ -1,68 +1,8 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { resume } from "$lib/content/resume";
 
-	const experience = [
-		{
-			title: "Software Engineer, Tech Lead",
-			company: "Ford Motor Company Credit - Consumer Offers and Renewals",
-			period: "Jan 2022 - Present",
-			achievements: [
-				"Migrated legacy Vue.js app to React.js, unifying tech stack and boosting scalability and productivity",
-				"Built CI/CD pipelines with Google Cloud Build, automating deployments and improving release reliability",
-				"Led cloud migration to GCP using Cloud Run, Postgres, and BigQuery for higher performance and lower cost",
-				"Integrated Adobe Experience Manager with GraphQL APIs, streamlining content delivery workflows",
-				"Enhanced observability with Cloud Monitoring, ContentSquare, and Splunk integrations",
-				"Designed and deployed automated BigQuery-to-Postgres pipelines with Apache Beam on Dataflow, cutting data sync time and enhancing analytics reliability",
-			],
-		},
-		{
-			title: "Software Engineer",
-			company: "Ford Motor Company Credit",
-			period: "Jan 2021 – Dec 2021",
-			achievements: [
-				"Developed Vue.js front-end with Spring Boot microservices, improving modularity and scalability",
-				"Built an ML-based next-vehicle recommendation app using Flask",
-				"Cut API latency from ~5s to ~200ms through caching and ORM optimization",
-				"Implemented WCAG-compliant E2E tests and optimized MySQL for high-volume environments",
-				"Automated onboarding workflows with DevOps scripting to accelerate developer setup",
-			],
-		},
-		{
-			title: "Legal Assistant",
-			company: "AT LAW GROUP, Dearborn MI",
-			period: "June 2019 – Jan 2021",
-			achievements: [
-				"Drafted case evaluation summaries for mediation and litigation support in personal injury matters",
-				"Conducted legal research and supported attorneys in preparing discovery and settlement documents",
-				"Maintained client communications, coordinated with medical providers and insurers, and managed case files",
-			],
-		},
-	];
-
-	const skills = {
-		Languages: ["Java", "Python", "JavaScript", "R", "C++", "Golang", "C"],
-		Frameworks: [
-			"React Native",
-			"React",
-			"Vue.js",
-			"Java Spring Boot",
-			"GraphQL",
-		],
-		DevOps: [
-			"GitHub",
-			"Jenkins",
-			"Docker",
-			"Google Cloud Build",
-			"Cloud Run",
-			"BigQuery",
-		],
-		Practices: ["Agile", "Paired Programming", "Test-Driven Development"],
-	};
-
-	let mounted = false;
-	onMount(() => {
-		mounted = true;
-	});
+	const { experience, skills, education, statement, name, title, tagline } =
+		resume;
 </script>
 
 <svelte:head>
@@ -83,26 +23,29 @@
 				</div>
 			</div>
 			<h1
-				class="text-6xl sm:text-7xl md:text-8xl font-display font-black mb-4 text-mahogany tracking-tighter"
+				class="text-6xl sm:text-7xl md:text-8xl font-display font-black mb-4 text-mahogany tracking-tighter uppercase"
 			>
-				MOHAMMED HAMZA
+				{name}
 			</h1>
 			<div
 				class="text-xl md:text-2xl text-brass font-display font-bold mb-8 uppercase tracking-[0.3em]"
 			>
-				Software Engineer
+				{title}
 			</div>
 			<div class="w-32 h-1 bg-mahogany mx-auto mb-10"></div>
 			<div
 				class="text-lg text-mahogany/70 mb-12 font-serif italic max-w-2xl mx-auto leading-relaxed"
 			>
-				Specializing in the intersection of high-scale cloud
-				architecture and legal precision. Currently building the future
-				of automotive finance at Ford Credit.
+				{tagline}
 			</div>
-			<div class="flex flex-col sm:flex-row justify-center gap-6">
+			<div
+				class="flex flex-col sm:flex-row justify-center items-center gap-6"
+			>
 				<a href="/contact" class="btn-legal"> Request Brief </a>
 				<a href="/projects" class="btn-outline-legal"> View Folio </a>
+				<a href="/oracles" class="btn-illuminated">
+					Consult the Oracles
+				</a>
 			</div>
 		</div>
 	</section>
@@ -111,28 +54,24 @@
 	<section class="mb-40">
 		<div class="flex flex-col md:flex-row gap-16 items-start">
 			<div class="md:w-1/4 pt-2">
+				<div
+					class="text-xs font-display tracking-[0.4em] text-brass uppercase mb-3"
+				>
+					Article I
+				</div>
 				<h2
 					class="text-3xl font-display font-bold text-mahogany border-l-4 border-mahogany pl-6"
 				>
 					Statement of Intent
 				</h2>
 			</div>
-			<div class="md:w-3/4 legal-folio p-10 md:p-14 bg-white/50">
+			<div class="md:w-3/4 legal-folio ink-bloom p-10 md:p-14 bg-white/50">
 				<div
 					class="font-serif text-xl leading-relaxed space-y-6 text-ink"
 				>
-					<p>
-						Accomplished Software Engineer and Technical Lead with a
-						proven record of orchestrating complex cloud migrations
-						and architecting resilient microservices. My approach
-						combines the rigorous logic of computer science with the
-						meticulous precision required for legal practice.
-					</p>
-					<p>
-						Presently advancing technical initiatives while pursuing
-						the transition into legal counsel, bridging the gap
-						between innovative technology and regulatory excellence.
-					</p>
+					{#each statement as paragraph}
+						<p>{paragraph}</p>
+					{/each}
 				</div>
 			</div>
 		</div>
@@ -147,7 +86,7 @@
 		</h2>
 		<div class="space-y-16">
 			{#each experience as exp}
-				<div class="legal-folio p-10 md:p-14 group">
+				<div class="legal-folio ink-bloom p-10 md:p-14 group">
 					<div class="mb-10">
 						<div
 							class="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-6"
@@ -205,30 +144,38 @@
 		>
 			Academic Credentials
 		</h2>
-		<div class="legal-folio p-10 md:p-14 max-w-3xl mx-auto">
-			<div
-				class="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-8"
-			>
-				<h3 class="text-3xl font-display font-bold text-mahogany">
-					Wayne State University
-				</h3>
-				<span class="text-mahogany/60 font-display font-bold text-sm"
-					>2017 – 2020</span
-				>
-			</div>
-			<div
-				class="text-2xl text-mahogany/90 font-display font-bold uppercase tracking-tight mb-4"
-			>
-				Bachelor of Science in Computer Science
-			</div>
-			<div class="text-lg text-mahogany/70 font-serif italic mb-2">
-				Minor in Mathematics | Concentration in Data Science
-			</div>
-			<div
-				class="text-mahogany/50 uppercase tracking-widest text-xs font-display"
-			>
-				Detroit, Michigan
-			</div>
+		<div class="space-y-12 max-w-3xl mx-auto">
+			{#each education as edu}
+				<div class="legal-folio ink-bloom p-10 md:p-14">
+					<div
+						class="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-8"
+					>
+						<h3
+							class="text-3xl font-display font-bold text-mahogany"
+						>
+							{edu.institution}
+						</h3>
+						<span
+							class="text-mahogany/60 font-display font-bold text-sm"
+						>
+							{edu.period}
+						</span>
+					</div>
+					<div
+						class="text-2xl text-mahogany/90 font-display font-bold uppercase tracking-tight mb-4"
+					>
+						{edu.degree}
+					</div>
+					<div class="text-lg text-mahogany/70 font-serif italic mb-2">
+						{edu.concentration}
+					</div>
+					<div
+						class="text-mahogany/50 uppercase tracking-widest text-xs font-display"
+					>
+						{edu.location}
+					</div>
+				</div>
+			{/each}
 		</div>
 	</section>
 
@@ -239,10 +186,10 @@
 		>
 			Technical Competencies
 		</h2>
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 			{#each Object.entries(skills) as [category, items]}
 				<div
-					class="legal-folio p-10 flex flex-col items-center text-center"
+					class="legal-folio ink-bloom p-10 flex flex-col items-center text-center"
 				>
 					<h3
 						class="text-xl font-display font-black text-mahogany mb-8 border-b-2 border-mahogany pb-4 w-full uppercase tracking-tighter"
@@ -258,6 +205,120 @@
 					</ul>
 				</div>
 			{/each}
+		</div>
+	</section>
+
+	<!-- Counsel Chamber: Oracle Preview -->
+	<section class="mb-20">
+		<div class="text-center mb-16">
+			<div
+				class="text-xs font-display tracking-[0.4em] text-brass uppercase mb-4"
+			>
+				Chambers of Counsel
+			</div>
+			<h2
+				class="text-4xl md:text-5xl font-display font-black text-mahogany tracking-tighter"
+			>
+				Consult the Oracles
+			</h2>
+			<div class="w-24 h-1 bg-brass mx-auto mt-6 mb-6"></div>
+			<p
+				class="text-lg text-mahogany/70 font-serif italic max-w-2xl mx-auto"
+			>
+				Four agentic counsels stand at the ready &mdash; reading the
+				archive, drafting compliance, guiding tours, and parsing the
+				fine print.
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+			<a
+				href="/oracles"
+				class="legal-folio p-10 group oracle-illumination ink-bloom"
+			>
+				<div
+					class="text-xs font-display tracking-[0.3em] text-brass uppercase mb-3"
+				>
+					Oracle I &middot; Retrieval
+				</div>
+				<h3
+					class="text-2xl font-display font-black text-mahogany mb-3 uppercase tracking-tight"
+				>
+					Portfolio Concierge
+				</h3>
+				<p class="text-ink/80 font-serif italic leading-relaxed">
+					An informed counsel that has read every page of this folio.
+					Ask anything about the work, the writing, or the record.
+				</p>
+			</a>
+
+			<a
+				href="/oracles"
+				class="legal-folio p-10 group oracle-illumination ink-bloom"
+			>
+				<div
+					class="text-xs font-display tracking-[0.3em] text-brass uppercase mb-3"
+				>
+					Oracle II &middot; Multi-Agent
+				</div>
+				<h3
+					class="text-2xl font-display font-black text-mahogany mb-3 uppercase tracking-tight"
+				>
+					Patent Compliance Bench
+				</h3>
+				<p class="text-ink/80 font-serif italic leading-relaxed">
+					A bench of three: a Drafter, a Reviewer, and a Revisor. They
+					confer in chambers and return a compliance memorandum.
+				</p>
+			</a>
+
+			<a
+				href="/oracles"
+				class="legal-folio p-10 group oracle-illumination ink-bloom"
+			>
+				<div
+					class="text-xs font-display tracking-[0.3em] text-brass uppercase mb-3"
+				>
+					Oracle III &middot; Tool Use
+				</div>
+				<h3
+					class="text-2xl font-display font-black text-mahogany mb-3 uppercase tracking-tight"
+				>
+					Project Tour Guide
+				</h3>
+				<p class="text-ink/80 font-serif italic leading-relaxed">
+					A guide who walks the halls of the works, retrieving the
+					relevant records as you ask &mdash; with every tool call
+					shown on the wire.
+				</p>
+			</a>
+
+			<a
+				href="/oracles"
+				class="legal-folio p-10 group oracle-illumination ink-bloom"
+			>
+				<div
+					class="text-xs font-display tracking-[0.3em] text-brass uppercase mb-3"
+				>
+					Oracle IV &middot; Structured Output
+				</div>
+				<h3
+					class="text-2xl font-display font-black text-mahogany mb-3 uppercase tracking-tight"
+				>
+					Clause Explainer
+				</h3>
+				<p class="text-ink/80 font-serif italic leading-relaxed">
+					Paste a contract clause; receive a memorandum of counsel
+					&mdash; plain English, obligations enumerated, risks
+					flagged.
+				</p>
+			</a>
+		</div>
+
+		<div class="text-center">
+			<a href="/oracles" class="btn-outline-legal">
+				Enter the Chambers
+			</a>
 		</div>
 	</section>
 </div>

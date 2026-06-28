@@ -59,7 +59,7 @@
 		{#each filteredProjects as project}
 			<a
 				href="/projects/{project.slug}"
-				class="legal-folio flex flex-col group overflow-hidden bg-white/50 cursor-pointer"
+				class="legal-folio ink-bloom flex flex-col group overflow-hidden bg-white/50 cursor-pointer"
 			>
 				<div
 					class="relative overflow-hidden aspect-video border-b border-paper-line/50"
